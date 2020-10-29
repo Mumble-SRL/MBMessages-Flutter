@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class MBPushMessage {
   String id;
   String title;
@@ -7,6 +9,17 @@ class MBPushMessage {
   String launchImage;
   Map<String, dynamic> userInfo;
   bool sent;
+
+  MBPushMessage({
+    @required this.id,
+    @required this.title,
+    @required this.body,
+    @required this.badge,
+    @required this.sound,
+    @required this.launchImage,
+    @required this.userInfo,
+    @required this.sent,
+  });
 
   MBPushMessage.fromDictionary(Map<String, dynamic> dictionary) {
     id = dictionary['id'];

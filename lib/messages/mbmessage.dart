@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/push_notifications/mbpush_message.dart';
 
@@ -25,7 +26,23 @@ class MBMessage {
 
   bool automationIsOn;
 
+  int sendAfterDays;
+
   dynamic triggers;
+
+  MBMessage({
+    @required this.id,
+    @required this.title,
+    @required this.messageDescription,
+    @required this.messageType,
+    @required this.inAppMessage,
+    @required this.pushMessage,
+    @required this.startDate,
+    @required this.endDate,
+    @required this.automationIsOn,
+    @required this.sendAfterDays,
+    @required this.triggers,
+  });
 
   MBMessage.fromDictionary(Map<String, dynamic> dictionary) {
     id = dictionary['id'];
@@ -56,7 +73,9 @@ class MBMessage {
       automationIsOn = dictionary['automation'] ?? false;
     }
 
-    triggers = dictionary['triggers'] ?? [];
+    sendAfterDays = dictionary['send_after_days'];
+
+    triggers = dictionary['triggers'] ?? null;
   }
 
   static MBMessageType _messageTypeFromString(String messageTypeString) {

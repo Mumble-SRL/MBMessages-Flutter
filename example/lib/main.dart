@@ -17,7 +17,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     MBManager.shared.apiToken = '0e3362a17c74a43ec57cc160ca6d222fad79c5ee';
     MBManager.shared.plugins = [
-      MBMessages(debug: true),
+      MBMessages(
+        debug: true,
+        onButtonPressed: (button) {
+          print(button);
+        },
+      ),
     ];
 
     super.initState();
@@ -26,6 +31,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: MBMessagesBuilder(
         child: Scaffold(
           appBar: AppBar(

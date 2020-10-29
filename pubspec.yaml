@@ -15,6 +15,7 @@ dependencies:
     path: ../mburger
   mpush: ^0.0.1
   device_info: '>=0.4.2+9 <2.0.0'
+  path_provider: ^1.6.21
   shared_preferences: ^0.5.12+2
 
 dev_dependencies:

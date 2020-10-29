@@ -8,6 +8,8 @@ PODS:
     - Flutter
   - mpush (0.0.1):
     - Flutter
+  - path_provider (0.0.1):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
 
@@ -17,6 +19,7 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - mbmessages (from `.symlinks/plugins/mbmessages/ios`)
   - mpush (from `.symlinks/plugins/mpush/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
 
 EXTERNAL SOURCES:
@@ -30,6 +33,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/mbmessages/ios"
   mpush:
     :path: ".symlinks/plugins/mpush/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
@@ -39,6 +44,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   mbmessages: 2fcce6073f02c7e44ab9abd258f7c6fa299a453f
   mpush: d571adb80c443896db81483df0eb37c58b1227cf
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

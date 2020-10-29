@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 
 enum MBInAppMessageStyle {
@@ -29,6 +30,19 @@ class MBInAppMessage {
   Color backgroundColor;
 
   List<MBInAppMessageButton> buttons;
+
+  MBInAppMessage({
+    @required this.id,
+    @required this.style,
+    @required this.duration,
+    @required this.title,
+    @required this.titleColor,
+    @required this.body,
+    @required this.bodyColor,
+    @required this.image,
+    @required this.backgroundColor,
+    @required this.buttons,
+  });
 
   MBInAppMessage.fromDictionary(Map<String, dynamic> dictionary) {
     id = dictionary['id'];
@@ -127,6 +141,12 @@ class MBInAppMessage {
   }
 
   Color _colorFromHexString(String hexString) {
+    if (hexString == null) {
+      return null;
+    }
+    if (hexString.length < 6) {
+      return null;
+    }
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));

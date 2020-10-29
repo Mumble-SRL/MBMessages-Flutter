@@ -2,16 +2,21 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_manager.dart';
+import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
 import 'package:mbmessages/mbmessages_plugin.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
+import 'package:mbmessages/metrics/mbmessage_metrics.dart';
 import 'package:mburger/mb_manager.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:mburger/mb_plugin/mb_plugins_manager.dart';
 import 'package:mpush/mp_android_notifications_settings.dart';
 import 'package:mpush/mp_topic.dart';
 
+import 'in_app_messages/mb_in_app_message.dart';
 import 'push_notifications/mbpush.dart';
 
 class MBMessages extends MBPlugin {
@@ -21,17 +26,25 @@ class MBMessages extends MBPlugin {
   /// The default is 1 second.
   int messagesDelay = 1;
 
+  /// If the plugin should automatically check messages at startup
+  bool automaticallyCheckMessagesAtStartup;
+
   /// Settings this var to true will always display the messages returned by the api, even if they've been already showed.
   bool debug = false;
 
+  /// Use this function to provide a theme for the in app message
+  MBInAppMessageTheme Function(MBInAppMessage) themeForMessage;
+
+  /// Use this function to receive a callback when a button is pressed
+  Function(MBInAppMessageButton) onButtonPressed;
+
   MBMessages({
     this.messagesDelay: 1,
-    bool automaticallyCheckMessagesAtStartup: true,
+    this.automaticallyCheckMessagesAtStartup: true,
     this.debug: false,
+    this.themeForMessage,
+    this.onButtonPressed,
   }) {
-    if (automaticallyCheckMessagesAtStartup) {
-      _performCheckMessages(fromStartup: true);
-    }
     _pluginStartup();
   }
 
@@ -40,6 +53,16 @@ class MBMessages extends MBPlugin {
       onAppEnterForeground: () => checkMessages(),
     );
   }
+
+//region plugin
+  int order = 1;
+
+  Future<void> startupBlock() async {
+    if (automaticallyCheckMessagesAtStartup) {
+      await _performCheckMessages(fromStartup: true);
+    }
+  }
+//endregion
 
   Future<void> checkMessages() async {
     _performCheckMessages(fromStartup: false);
@@ -79,6 +102,11 @@ class MBMessages extends MBPlugin {
       }
     }
 
+    MBPluginsManager.messagesReceived(
+      messages,
+      fromStartup,
+    );
+
     int delay = messagesDelay ?? 0;
     List<MBMessage> validMessages = messages
         .where((message) =>
@@ -91,6 +119,8 @@ class MBMessages extends MBPlugin {
       MBInAppMessageManager.presentMessages(
         messages: validMessages,
         ignoreShowedMessages: debug ?? false,
+        themeForMessage: themeForMessage,
+        onButtonPressed: onButtonPressed,
       );
     }
   }
@@ -99,6 +129,8 @@ class MBMessages extends MBPlugin {
     MBInAppMessageManager.presentMessages(
       messages: messages,
       ignoreShowedMessages: debug,
+      themeForMessage: themeForMessage,
+      onButtonPressed: onButtonPressed,
     );
   }
 //region Push handling
@@ -122,12 +154,24 @@ class MBMessages extends MBPlugin {
     @required Function(Map<String, dynamic>) onNotificationArrival,
     @required Function(Map<String, dynamic>) onNotificationTap,
     @required MPAndroidNotificationsSettings androidNotificationsSettings,
-  }) =>
-      MBPush.configure(
-        onNotificationArrival: onNotificationArrival,
-        onNotificationTap: onNotificationTap,
-        androidNotificationsSettings: androidNotificationsSettings,
-      );
+  }) {
+    MBPush.configure(
+      onNotificationArrival: (notification) {
+        MBMessageMetrics.notificationArrived(notification);
+        if (onNotificationArrival != null) {
+          onNotificationArrival(notification);
+        }
+      },
+      onNotificationTap: (notification) {
+        MBMessageMetrics.notificationTapped(notification);
+        if (onNotificationTap != null) {
+          onNotificationTap(notification);
+        }
+      },
+      androidNotificationsSettings: androidNotificationsSettings,
+    );
+    MBMessageMetrics.checkLaunchNotification();
+  }
 
   static Future<void> registerDevice(String token) async =>
       MBPush.registerDevice(token);

@@ -19,16 +19,22 @@ class MBPush {
   static Future<Map<String, dynamic>> launchNotification() =>
       MPush.launchNotification();
 
+  static MPAndroidNotificationsSettings _androidPushNotificationsSettings;
+  static MPAndroidNotificationsSettings get androidPushNotificationsSettings =>
+      _androidPushNotificationsSettings;
+
   static configure({
     @required Function(Map<String, dynamic>) onNotificationArrival,
     @required Function(Map<String, dynamic>) onNotificationTap,
     @required MPAndroidNotificationsSettings androidNotificationsSettings,
-  }) =>
-      MPush.configure(
-        onNotificationArrival: onNotificationArrival,
-        onNotificationTap: onNotificationTap,
-        androidNotificationsSettings: androidNotificationsSettings,
-      );
+  }) {
+    _androidPushNotificationsSettings = androidNotificationsSettings;
+    MPush.configure(
+      onNotificationArrival: onNotificationArrival,
+      onNotificationTap: onNotificationTap,
+      androidNotificationsSettings: androidNotificationsSettings,
+    );
+  }
 
   static Future<void> registerDevice(String token) async =>
       MPush.registerDevice(token);
