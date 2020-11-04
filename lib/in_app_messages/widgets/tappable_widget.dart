@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 class TappableWidget extends StatefulWidget {
   final Widget child;
