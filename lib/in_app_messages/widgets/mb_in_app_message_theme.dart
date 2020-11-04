@@ -94,4 +94,34 @@ class MBInAppMessageTheme {
           : mburgerColor,
     );
   }
+
+  /// Creates a copy of this theme but with the given fields replaced with the new values
+  MBInAppMessageTheme copyWith({
+    Color backgroundColor,
+    TextStyle titleStyle,
+    TextStyle bodyStyle,
+    Color closeButtonColor,
+    Color closeButtonBackgroundColor,
+    Color button1BackgroundColor,
+    TextStyle button1TextStyle,
+    Color button2BackgroundColor,
+    Color button2BorderColor,
+    TextStyle button2TextStyle,
+  }) {
+    return MBInAppMessageTheme(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      titleStyle: titleStyle ?? this.titleStyle,
+      bodyStyle: bodyStyle ?? this.bodyStyle,
+      closeButtonColor: closeButtonColor ?? this.closeButtonColor,
+      closeButtonBackgroundColor:
+          closeButtonBackgroundColor ?? this.closeButtonBackgroundColor,
+      button1BackgroundColor:
+          button1BackgroundColor ?? this.button1BackgroundColor,
+      button1TextStyle: button1TextStyle ?? this.button1TextStyle,
+      button2BackgroundColor:
+          button2BackgroundColor ?? this.button2BackgroundColor,
+      button2BorderColor: button2BorderColor ?? this.button2BorderColor,
+      button2TextStyle: button2TextStyle ?? this.button2TextStyle,
+    );
+  }
 }
