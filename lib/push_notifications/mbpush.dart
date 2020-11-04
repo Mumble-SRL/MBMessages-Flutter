@@ -31,6 +31,7 @@ class MBPush {
       MPush.launchNotification();
 
   static MPAndroidNotificationsSettings _androidPushNotificationsSettings;
+
   /// Returns the settings used to show notifications on android: the channel id, name, description and the icon.
   static MPAndroidNotificationsSettings get androidPushNotificationsSettings =>
       _androidPushNotificationsSettings;
@@ -38,6 +39,7 @@ class MBPush {
   /// Returns the callback called when a push notification arrives.
   static Function(Map<String, dynamic>) get onNotificationArrival =>
       MPush.onNotificationArrival;
+
   /// Returns the callback called when a push notification is tapped.
   static Function(Map<String, dynamic>) get onNotificationTap =>
       MPush.onNotificationTap;

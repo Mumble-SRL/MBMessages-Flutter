@@ -7,14 +7,17 @@ import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_button_widg
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
-/// This widget that is displayed as a banner coming from the bottom when the in app message has the style `MBInAppMessageStyle.bottomBanner`
+/// This widget is displayed as a banner coming from the bottom when the in app message has the style `MBInAppMessageStyle.bottomBanner`
 class MBInAppMessageBannerBottom extends StatefulWidget {
   /// The main context, used to dismiss the message correctly.
   final BuildContext mainContext;
+
   /// The message.
   final MBMessage message;
+
   /// Function called when the button is pressed.
   final Function(MBInAppMessageButton) onButtonPressed;
+
   /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
@@ -36,6 +39,7 @@ class _MBInAppMessageBannerBottomState
     extends State<MBInAppMessageBannerBottom> {
   /// Returns the in-app message of this message
   MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+
   /// Timer used to dismiss the message after the defined duration is passed.
   Timer timer;
 

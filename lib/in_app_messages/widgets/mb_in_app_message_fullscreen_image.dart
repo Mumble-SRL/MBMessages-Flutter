@@ -9,13 +9,25 @@ import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart'
 import 'package:mbmessages/in_app_messages/widgets/tappable_widget.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
+/// This widget is displayed in the middle of the screen, coming from the bottom (as a modal view) when the in app message has the style `MBInAppMessageStyle.fullscreenImage`.
+/// This widget has only a big image as the background, the close button, and the actions button as the bottom. It's useful if the content to displayed is just a big visual image.
 class MBInAppMessageFullscreenImage extends StatefulWidget {
+  /// The main context, used to dismiss the message correctly
   final BuildContext mainContext;
+
+  /// The message.
   final MBMessage message;
+
+  /// The file where the image has been downloaded.
   final File imageFile;
+
+  /// Function called when the button is pressed.
   final Function(MBInAppMessageButton) onButtonPressed;
+
+  /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
+  /// Initializes a `MBInAppMessageFullscreenImage` with the parameters passed
   const MBInAppMessageFullscreenImage({
     Key key,
     @required this.mainContext,
@@ -32,7 +44,10 @@ class MBInAppMessageFullscreenImage extends StatefulWidget {
 
 class _MBInAppMessageFullscreenImageState
     extends State<MBInAppMessageFullscreenImage> {
+  /// Returns the in-app message of this message
   MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+
+  /// Timer used to dismiss the message after the defined duration is passed.
   Timer timer;
 
   @override
@@ -87,6 +102,7 @@ class _MBInAppMessageFullscreenImageState
     );
   }
 
+  /// The image for the widget.
   Widget _image() {
     if (inAppMessage.image != null && inAppMessage.image != '') {
       print(widget.imageFile);
@@ -98,6 +114,7 @@ class _MBInAppMessageFullscreenImageState
     return Container();
   }
 
+  /// The buttons of the widget.
   Widget _buttons() {
     bool hasButtons = inAppMessage.buttons?.length != 0;
     if (!hasButtons) {
@@ -150,6 +167,8 @@ class _MBInAppMessageFullscreenImageState
     );
   }
 
+  /// Function called when a button is pressed.
+  /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer.cancel();
     Navigator.of(widget.mainContext).pop(false);
@@ -159,6 +178,7 @@ class _MBInAppMessageFullscreenImageState
     }
   }
 
+  /// The close button for this widget.
   Widget _closeButton() {
     return Positioned.fill(
       child: Align(
@@ -186,6 +206,7 @@ class _MBInAppMessageFullscreenImageState
     );
   }
 
+  /// Function called when close is pressed.
   _closePressed() async {
     timer.cancel();
     Navigator.of(widget.mainContext).pop(true);

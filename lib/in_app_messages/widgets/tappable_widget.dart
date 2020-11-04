@@ -1,7 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+/// A tappable widget, used as base for in app message buttons.
+/// When the widget is tapped the child changes its alpha to 0.4.
 class TappableWidget extends StatefulWidget {
+  /// The child for this widget.
   final Widget child;
+
+  /// Callback called when the widget is tapped.
   final VoidCallback onTap;
 
   const TappableWidget({
@@ -16,7 +21,10 @@ class TappableWidget extends StatefulWidget {
 
 class _TappableWidgetState extends State<TappableWidget>
     with SingleTickerProviderStateMixin {
+  /// The duration of fade out animation.
   static const Duration kFadeOutDuration = Duration(milliseconds: 10);
+
+  /// The duration of fade in animation.
   static const Duration kFadeInDuration = Duration(milliseconds: 100);
   final Tween<double> _opacityTween = Tween<double>(begin: 1.0);
 

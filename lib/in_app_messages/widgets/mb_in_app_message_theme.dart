@@ -5,22 +5,31 @@ import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 class MBInAppMessageTheme {
   /// The background color for the alert.
   final Color backgroundColor;
+
   /// The title text style.
   final TextStyle titleStyle;
+
   /// The body text style.
   final TextStyle bodyStyle;
+
   /// The color of the close button icon.
   final Color closeButtonColor;
+
   /// The background color of the close button.
   final Color closeButtonBackgroundColor;
+
   /// The background color for the first button.
   final Color button1BackgroundColor;
+
   /// The text style for the first button.
   final TextStyle button1TextStyle;
+
   /// The background color for the second button.
   final Color button2BackgroundColor;
+
   /// The border color for the second button.
   final Color button2BorderColor;
+
   /// The text style for the second button.
   final TextStyle button2TextStyle;
 

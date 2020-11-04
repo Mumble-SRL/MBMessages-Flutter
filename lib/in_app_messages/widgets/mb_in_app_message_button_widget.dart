@@ -3,12 +3,24 @@ import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
 import 'package:mbmessages/in_app_messages/widgets/tappable_widget.dart';
 
+/// A button of an in app message widget.
 class MBInAppMessageButtonWidget extends StatelessWidget {
+  /// The main context, used to dismiss the message correctly.
   final BuildContext mainContext;
+
+  /// The `MBInAppMessageButton`.
   final MBInAppMessageButton button;
+
+  /// The height of the button.
   final double height;
+
+  /// If it's the first button.
   final bool isButton1;
+
+  /// Callback when the button is tapped.
   final VoidCallback onTap;
+
+  /// The message theme.
   final MBInAppMessageTheme theme;
 
   const MBInAppMessageButtonWidget({

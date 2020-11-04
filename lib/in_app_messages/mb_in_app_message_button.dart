@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 enum MBInAppMessageButtonLinkType {
   /// A web link
   link,
+
   /// An in app link
   inApp,
 }
@@ -13,12 +14,16 @@ enum MBInAppMessageButtonLinkType {
 class MBInAppMessageButton {
   /// The title of the button
   String title;
+
   /// An optional color for the title
   Color titleColor;
+
   /// An optional background color
   Color backgroundColor;
+
   /// The link of the button
   String link;
+
   /// The type of link of the button
   MBInAppMessageButtonLinkType linkType;
 

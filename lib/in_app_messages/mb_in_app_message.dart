@@ -7,10 +7,13 @@ import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 enum MBInAppMessageStyle {
   /// Messages with this style will appear as a banner from the top
   bannerTop,
+
   /// Messages with this style will appear as a banner from the bottom
   bannerBottom,
+
   /// Messages with this style will appear as a center message
   center,
+
   /// Messages with this style will appear as fullscreen images
   fullscreenImage,
 }
