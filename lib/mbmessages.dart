@@ -19,14 +19,27 @@ import 'package:mpush/mp_topic.dart';
 import 'in_app_messages/mb_in_app_message.dart';
 import 'push_notifications/mbpush.dart';
 
+export 'mb_messages_builder.dart';
+export 'push_notifications/mbpush.dart';
+export 'in_app_messages/widgets/mb_in_app_message_theme.dart';
+export 'in_app_messages/mb_in_app_message_button.dart';
+
+/// This is the main entry point to manage all the messages features of MBurger.
+/// To use create an instance of MBMessages and add it to the MBManager plugins.
+/// `MBManager.shared.plugins = [MBMessages()];`
+/// You can pass other options described below in the init method described below.
 class MBMessages extends MBPlugin {
+  /// A function to provide the `BuildContext` to show in-app messages.
+  /// To present in-app messages `MBMessages` uses the `showDialog` function that needs a `BuildContext`.
+  /// If you use a `MBMessagesBuilder` you don't have to set this and it will be handled automatically.
   static BuildContext Function() contextCallback;
 
   /// The delayed (in seconds) used to delay the presenting of the message after a successful fetch.
   /// The default is 1 second.
   int messagesDelay = 1;
 
-  /// If the plugin should automatically check messages at startup
+  /// If the plugin should automatically check messages at startup.
+  /// If you set this value to false you can call `checkMessages()` to manually check the messages.
   bool automaticallyCheckMessagesAtStartup;
 
   /// Settings this var to true will always display the messages returned by the api, even if they've been already showed.
@@ -38,6 +51,12 @@ class MBMessages extends MBPlugin {
   /// Use this function to receive a callback when a button is pressed
   Function(MBInAppMessageButton) onButtonPressed;
 
+  /// Initializes an instance of MBMessages plugin
+  /// @param messagesDelay The delayed (in seconds) used to delay the presenting of the message after a successful fetch. By default it's 1 second.
+  /// @param automaticallyCheckMessagesAtStartup If the plugin should automatically check messages at startup. By default it's true.
+  /// @param debug  Settings this var to true will always display the messages returned by the api, even if they've been already showed.
+  /// @param themeForMessage A theme used to define and override colors and fonts of in-app messages.
+  /// @param onButtonPressed Callback called when a button of an in-app message is tapped. Use this to bring you user to the correct screen, based on the button settings.
   MBMessages({
     this.messagesDelay: 1,
     this.automaticallyCheckMessagesAtStartup: true,
@@ -48,6 +67,7 @@ class MBMessages extends MBPlugin {
     _pluginStartup();
   }
 
+  /// Starts the plugin and initializes the call to check messages when the app becomes active
   Future<void> _pluginStartup() async {
     await MBMessagesPlugin.initializeMethodCall(
       onAppEnterForeground: () => checkMessages(),
@@ -55,8 +75,11 @@ class MBMessages extends MBPlugin {
   }
 
 //region plugin
-  int order = 1;
+  /// The order of startup for this plugin, in MBurger
+  int order = 2;
 
+  /// The function run at startup by MBurger, initializes the plugin and do the startup work.
+  /// It increments the session number and updates the metadata.
   Future<void> startupBlock() async {
     if (automaticallyCheckMessagesAtStartup) {
       await _performCheckMessages(fromStartup: true);
@@ -64,10 +87,13 @@ class MBMessages extends MBPlugin {
   }
 //endregion
 
+  /// This method checks the messages from the server and shows them, if needed.
+  /// It's called automatically at startup, but it can be called to force the check.
   Future<void> checkMessages() async {
     _performCheckMessages(fromStartup: false);
   }
 
+  /// Performs the check of messages from the server.
   Future<void> _performCheckMessages({@required bool fromStartup}) async {
     var defaultParameters = await MBManager.shared.defaultParameters();
     var headers = await MBManager.shared.headers(contentTypeJson: false);
@@ -125,6 +151,8 @@ class MBMessages extends MBPlugin {
     }
   }
 
+  /// Presents in app messages to the user.
+  /// @param messages In app messages that will be presented.
   presentMessages(List<MBMessage> messages) {
     MBInAppMessageManager.presentMessages(
       messages: messages,
@@ -133,23 +161,38 @@ class MBMessages extends MBPlugin {
       onButtonPressed: onButtonPressed,
     );
   }
+
 //region Push handling
 
+  /// Returns the `pushToken` of the push notifications plugin of MBurger.
+  /// This will return the token of the MPush SDK.
+  /// If you need help setting up the push notifications go to the [MPush documentation](https://docs.mpush.cloud/flutter-sdk/introduction).
   static String get pushToken => MBPush.pushToken;
 
+  /// Set the `pushToken` of the push notifications plugin of MBurger.
+  /// This will set the token of the MPush SDK.
+  /// If you need help setting up the push notifications go to the [MPush documentation](https://docs.mpush.cloud/flutter-sdk/introduction).
   static set pushToken(String pushToken) {
     MBPush.pushToken = pushToken;
   }
 
+  /// Callback called when a token is retrieved from APNS or FCM
   static Function(String) get onToken => MBPush.onToken;
 
+  /// Callback called when a token is retrieved from APNS or FCM
   static set onToken(Function(String) onToken) {
     MBPush.onToken = onToken;
   }
 
+  /// The notification that launched the app, if present, otherwise `null`.
   static Future<Map<String, dynamic>> launchNotification() async =>
       MBPush.launchNotification();
 
+  /// Configures the MBPush plugin with the callbacks.
+  ///
+  /// @param onNotificationArrival Called when a push notification arrives.
+  /// @param onNotificationTap Called when a push notification is tapped.
+  /// @param androidNotificationsSettings Settings for the android notification.
   static configurePush({
     @required Function(Map<String, dynamic>) onNotificationArrival,
     @required Function(Map<String, dynamic>) onNotificationTap,
@@ -173,32 +216,65 @@ class MBMessages extends MBPlugin {
     MBMessageMetrics.checkLaunchNotification();
   }
 
+  /// Register a device token.
+  ///
+  /// @param token: the token for this device, typically coming from the onToken` callback`.
+  /// @returns A future that completes once the registration is successful.
   static Future<void> registerDevice(String token) async =>
       MBPush.registerDevice(token);
 
+  /// Register the current device to a topic.
+  ///
+  /// @param topic The topic you will register to.
+  /// @returns A future that completes once the registration is successful.
   static Future<void> registerToTopic(MPTopic topic) async =>
       MBPush.registerToTopic(topic);
 
+  /// Register the current device to an array of topics.
+  ///
+  /// @param topics The array of topics you will register to.
+  /// @returns A future that completes once the registration is successful.
   static Future<void> registerToTopics(List<MPTopic> topics) async =>
       MBPush.registerToTopics(topics);
 
+  /// Unregister the current device from a topic, the topic is matched using the code of the topic.
+  ///
+  /// @param topics The topic you will unregister from.
+  /// @returns A future that completes once the registration is successful.
   static Future<void> unregisterFromTopic(String topic) async =>
       MBPush.unregisterFromTopic(topic);
 
+  /// Unregister the current device from an array of topics, the topics are matched using the code of the topic.
+  ///
+  /// @param topics The array of topics you will unregister from.
+  /// @returns A future that completes once the registration is successful.
   static Future<void> unregisterFromTopics(List<String> topics) async =>
       MBPush.unregisterFromTopics(topics);
 
+  /// Unregister the current device from all topics it is registred to.
+  ///
+  /// @returns A future that completes once the registration is successful.
   static Future<void> unregisterFromAllTopics() async =>
       MBPush.unregisterFromAllTopics();
 
+  /// Requests the token to APNS & GCM.
+  ///
+  /// This will not return the token, use the onToken callback to
+  /// retrieve the token once the registration is completed with success.
+  ///
+  /// @returns A future that completes once the registration is started successfully.
   static Future<void> requestToken() async => MBPush.requestToken();
 
+  /// A push topic that represents all devices, used to send a push to all apps.
+  /// @returns a future that completes with the project push topic.
   static Future<MPTopic> projectPushTopic() async => MPTopic(
         code: 'project.all',
         title: 'All users',
         single: false,
       );
 
+  /// A push topic that represents this device, used to send a push to only this device.
+  /// @returns a future that completes with the device push topic.
   static Future<MPTopic> devicePushTopic() async {
     String deviceId;
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

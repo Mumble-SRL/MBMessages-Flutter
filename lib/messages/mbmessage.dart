@@ -2,34 +2,50 @@ import 'package:flutter/foundation.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/push_notifications/mbpush_message.dart';
 
+/// The type of message, in-app message or push.
 enum MBMessageType {
+  /// An in-app message.
   inAppMessage,
+  /// A push message.
   push,
 }
 
+/// This object represents a message from MBurger.
 class MBMessage {
+  /// The id of the message.
   int id;
 
+  /// The title of the message.
   String title;
 
+  /// The description of the message.
   String messageDescription;
 
+  /// The type of message.
   MBMessageType messageType;
 
+  /// If the type of the message is in-app message, this is the in app message connected to the message.
   MBInAppMessage inAppMessage;
 
+  /// If the type of the message is push, this is the push message connected to the message.
   MBPushMessage pushMessage;
 
+  /// The start date of the message.
   DateTime startDate;
 
+  /// The end date of the message.
   DateTime endDate;
 
+  /// If automation is on for this message.
   bool automationIsOn;
 
+  /// The number of days to wait to show the message.
   int sendAfterDays;
 
+  /// The triggers for the messages.
   dynamic triggers;
 
+  /// Initializes a message with the parameters passed.
   MBMessage({
     @required this.id,
     @required this.title,
@@ -44,6 +60,7 @@ class MBMessage {
     @required this.triggers,
   });
 
+  /// Initializes a message with the dictionary returned by the APIs.
   MBMessage.fromDictionary(Map<String, dynamic> dictionary) {
     id = dictionary['id'];
     title = dictionary['title'];
@@ -78,6 +95,8 @@ class MBMessage {
     triggers = dictionary['triggers'] ?? null;
   }
 
+  /// The message type frm the string returned by the APIs.
+  /// @param messageTypeString The string that needs to be converted to `MBMessageType`.
   static MBMessageType _messageTypeFromString(String messageTypeString) {
     if (messageTypeString == null) {
       return MBMessageType.inAppMessage;

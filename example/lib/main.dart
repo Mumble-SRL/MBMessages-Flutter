@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mbmessages/mb_messages_builder.dart';
+
 import 'package:mbmessages/mbmessages.dart';
 import 'package:mburger/mburger.dart';
 
@@ -15,10 +15,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    MBManager.shared.apiToken = '0e3362a17c74a43ec57cc160ca6d222fad79c5ee';
+    MBManager.shared.apiToken = 'YOUR_API_TOKEN';
     MBManager.shared.plugins = [
       MBMessages(
-        debug: true,
         onButtonPressed: (button) {
           print(button);
         },
@@ -39,9 +38,50 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text('MBMessages example app'),
           ),
-          body: Center(),
+          body: Center(
+            child: FlatButton(
+              child: Text(
+                'Configure push notifications',
+              ),
+              onPressed: () => _configurePushNotifications(),
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _configurePushNotifications() async {
+    MBPush.pushToken = 'YOUR_PUSH_API_KEY';
+    MBPush.onToken = (token) async {
+      print("Token received $token");
+      await MBPush.registerDevice(token).catchError(
+        (error) => print(error),
+      );
+      await MBPush.registerToTopic(MPTopic(code: 'Topic')).catchError(
+        (error) => print(error),
+      );
+      print('Registered');
+    };
+
+    MBPush.configure(
+      onNotificationArrival: (notification) {
+        print("Notification arrived: $notification");
+      },
+      onNotificationTap: (notification) {
+        print("Notification tapped: $notification");
+      },
+      androidNotificationsSettings: MPAndroidNotificationsSettings(
+        channelId: 'mpush_example',
+        channelName: 'mpush',
+        channelDescription: 'mpush',
+        icon: '@mipmap/icon_notif',
+      ),
+    );
+
+    MBPush.requestToken();
+
+    Map<String, dynamic> launchNotification = await MBPush.launchNotification();
+    print(launchNotification);
   }
 }

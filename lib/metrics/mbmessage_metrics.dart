@@ -6,12 +6,18 @@ import 'package:http/http.dart' as http;
 import 'package:mburger/mb_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// The type of metric of the message, if the message has been viewed or if the user interacted with the push.
 enum MBMessageMetricsMetric {
+  /// View metric.
   view,
+
+  /// Interaction metric.
   interaction,
 }
 
+/// The class that send metrics/analytics data to MBurger.
 class MBMessageMetrics {
+  /// Checks the launch notification and sends analytics data to MBurger if a notification has launched the app.
   static Future<void> checkLaunchNotification() async {
     Map<String, dynamic> launchNotification = await MBPush.launchNotification();
     if (launchNotification != null) {
@@ -19,6 +25,7 @@ class MBMessageMetrics {
     }
   }
 
+  /// Called when a notification arrives sends the `MBMessageMetricsMetric.view` metric.
   static Future<void> notificationArrived(
       Map<String, dynamic> notification) async {
     if (notification == null) {
@@ -34,6 +41,8 @@ class MBMessageMetrics {
     );
   }
 
+  /// Called when a notification is tapped, it sends the `MBMessageMetricsMetric.interaction` metric.
+  /// If the `MBMessageMetricsMetric.view` metric has not been sent yet it sends also this metric.
   static Future<void> notificationTapped(
       Map<String, dynamic> notification) async {
     if (notification == null) {
@@ -64,6 +73,9 @@ class MBMessageMetrics {
     }
   }
 
+  /// Creates a metric for a push notification.
+  /// @param metric The metric type.
+  /// @param messageId The id of the message.
   static Future<void> _createPushNotificationMetric(
     MBMessageMetricsMetric metric,
     int messageId,
@@ -76,6 +88,7 @@ class MBMessageMetrics {
     return _createMessageMetric(metric, messageId);
   }
 
+  /// Called when an in-app message is showed, it sends the `MBMessageMetricsMetric.view` metric.
   static Future<void> inAppMessageShowed(MBMessage message) async {
     return _createMessageMetric(
       MBMessageMetricsMetric.view,
@@ -83,6 +96,8 @@ class MBMessageMetrics {
     );
   }
 
+  /// Called when an in-app message has an interaction, it sends the `MBMessageMetricsMetric.interaction` metric.
+  /// If the `MBMessageMetricsMetric.view` metric has not been sent yet it sends also this metric.
   static Future<void> inAppMessageInteracted(MBMessage message) async {
     return _createMessageMetric(
       MBMessageMetricsMetric.interaction,
@@ -90,6 +105,9 @@ class MBMessageMetrics {
     );
   }
 
+  /// Sends the message metric to MBurger.
+  /// @param metric The message metric to create.
+  /// @param messageId The id of the message that will be showed.
   static Future<void> _createMessageMetric(
     MBMessageMetricsMetric metric,
     int messageId,
@@ -117,6 +135,7 @@ class MBMessageMetrics {
     MBManager.checkResponse(response.body, checkBody: false);
   }
 
+  /// Converts a `MBMessageMetricsMetric` to a `String` to send to MBurger APIs
   static String _metricStringForMetric(MBMessageMetricsMetric metric) {
     if (metric == MBMessageMetricsMetric.view) {
       return 'view';
@@ -126,6 +145,9 @@ class MBMessageMetrics {
     return 'view';
   }
 
+  /// If the push notification metric has been already sent or not.
+  /// @param metric The metric type.
+  /// @param messageId The id of the message.
   static Future<bool> _pushNotificationMetricSent(
     MBMessageMetricsMetric metric,
     int messageId,
@@ -136,7 +158,10 @@ class MBMessageMetrics {
     return metricsStrings.contains(_metricString(metric, messageId));
   }
 
-  static Future<bool> _setPushNotificationMetricSent(
+  /// Sets a push notification metric as sent in MBurger.
+  /// @param metric The metric type.
+  /// @param messageId The id of the message.
+  static Future<void> _setPushNotificationMetricSent(
     MBMessageMetricsMetric metric,
     int messageId,
   ) async {
@@ -153,6 +178,9 @@ class MBMessageMetrics {
     }
   }
 
+  /// The metric string used to save in the shared preference if the metric has been sent or not.
+  /// @param metric The metric type.
+  /// @param messageId The id of the message.
   static String _metricString(
     MBMessageMetricsMetric metric,
     int messageId,
@@ -160,6 +188,7 @@ class MBMessageMetrics {
     return _metricStringForMetric(metric) + '_' + messageId.toString();
   }
 
+  /// The key used to store information in shared preferences.
   static String _notificationMetricsKey() {
     return 'com.mumble.mburger.messages.pushNotificationViewed';
   }
