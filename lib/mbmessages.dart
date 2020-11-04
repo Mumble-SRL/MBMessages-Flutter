@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_manager.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
@@ -45,7 +45,7 @@ class MBMessages extends MBPlugin {
   /// Settings this var to true will always display the messages returned by the api, even if they've been already showed.
   bool debug = false;
 
-  /// Use this function to provide a theme for the in app message
+  /// Use this function to provide a theme for in-app messages.
   MBInAppMessageTheme Function(MBInAppMessage) themeForMessage;
 
   /// Use this function to receive a callback when a button is pressed

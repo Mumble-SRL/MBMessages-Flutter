@@ -14,10 +14,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  device_info: '>=0.4.2+9 <2.0.0'
+  http: ^0.12.0+4
   mburger: ^0.0.1+19
   mpush: ^0.0.1+2
-  device_info: '>=0.4.2+9 <2.0.0'
   path_provider: ^1.6.21
+  path: ^1.7.0
   shared_preferences: ^0.5.12+2
 
 dev_dependencies:

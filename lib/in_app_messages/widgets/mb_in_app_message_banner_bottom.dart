@@ -7,12 +7,21 @@ import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_button_widg
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
+/// This widget is displayed as a banner coming from the bottom when the in app message has the style `MBInAppMessageStyle.bottomBanner`
 class MBInAppMessageBannerBottom extends StatefulWidget {
+  /// The main context, used to dismiss the message correctly.
   final BuildContext mainContext;
+
+  /// The message.
   final MBMessage message;
+
+  /// Function called when the button is pressed.
   final Function(MBInAppMessageButton) onButtonPressed;
+
+  /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
+  /// Initializes a `MBInAppMessageBannerBottom` with the parameters passed
   const MBInAppMessageBannerBottom({
     Key key,
     @required this.mainContext,
@@ -28,7 +37,10 @@ class MBInAppMessageBannerBottom extends StatefulWidget {
 
 class _MBInAppMessageBannerBottomState
     extends State<MBInAppMessageBannerBottom> {
+  /// Returns the in-app message of this message
   MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+
+  /// Timer used to dismiss the message after the defined duration is passed.
   Timer timer;
 
   @override
@@ -100,6 +112,7 @@ class _MBInAppMessageBannerBottomState
     );
   }
 
+  /// The image for the widget.
   Widget _image() {
     if (inAppMessage.image != null && inAppMessage.image != '') {
       return Padding(
@@ -117,6 +130,7 @@ class _MBInAppMessageBannerBottomState
     return Container();
   }
 
+  /// The main textual content of the widget.
   Widget _content() {
     bool hasImage = inAppMessage.image != null && inAppMessage.image != '';
     bool hasTitle = inAppMessage.title != null && inAppMessage.title != '';
@@ -159,6 +173,7 @@ class _MBInAppMessageBannerBottomState
     );
   }
 
+  /// The buttons of the widget.
   Widget _buttons() {
     bool hasButtons = inAppMessage.buttons?.length != 0;
     if (!hasButtons) {
@@ -202,6 +217,7 @@ class _MBInAppMessageBannerBottomState
     );
   }
 
+  /// The handle positioned at the bottom to indicate that the user can dismiss interactively this widget.
   Widget _handle() {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
@@ -218,6 +234,8 @@ class _MBInAppMessageBannerBottomState
     );
   }
 
+  /// Function called when a button is pressed.
+  /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer.cancel();
     Navigator.of(widget.mainContext).pop(false);

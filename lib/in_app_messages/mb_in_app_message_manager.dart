@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
@@ -18,7 +17,13 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
+/// Main class that manages the displaying of in-app messages, and keeps references of what messages have already been displayed.
 class MBInAppMessageManager {
+  /// Present an array of in-app messages, if they're not been already presented
+  /// @param messages The messages that needs to be presented
+  /// @param ignoreShowedMessages if this is true a message will be displayed even if it has already been displayed
+  /// @param themeForMessage A function that provides the theme of an in-app message.
+  /// @param onButtonPressed Function called when a button is pressed.
   static void presentMessages({
     @required List<MBMessage> messages,
     bool ignoreShowedMessages: false,
@@ -51,6 +56,11 @@ class MBInAppMessageManager {
     );
   }
 
+  /// Presents a message at the `index` specified of the `messages` array.
+  /// @param index The index of the message to show.
+  /// @param messages The list of messages.
+  /// @param themeForMessage A function that provides the theme of an in-app message.
+  /// @param onButtonPressed Function called when a button is pressed.
   static _presentMessage({
     @required int index,
     @required List<MBMessage> messages,
@@ -122,7 +132,7 @@ class MBInAppMessageManager {
 
     /// Result is false if the message has been hidden by a button press
     /// Otherwise it's true, defaults to true if it's null because dismissing it
-    /// from the barrier retturns null
+    /// from the barrier returns null
     if (result ?? true) {
       if (index + 1 < messages.length) {
         _presentMessage(
@@ -135,6 +145,11 @@ class MBInAppMessageManager {
     }
   }
 
+  /// Returns and configures the widget for the message passed.
+  /// @param context The `BuildContext`, used to dismiss the widget correctly
+  /// @param message The in-app message.
+  /// @param onButtonPressed Function called when a button is pressed.
+  /// @param theme The theme that will be used in the message widget
   static Future<Widget> _widgetForInAppMessage({
     @required BuildContext context,
     @required MBMessage message,
@@ -181,6 +196,8 @@ class MBInAppMessageManager {
     return Container();
   }
 
+  /// Builds the transition for the message passed.
+  /// All in-app messages appear from the bottom with the exception of bannerTop that appears from the top.
   static Widget _transitionForMessage(
     MBMessage message,
     Animation animation,
@@ -206,6 +223,10 @@ class MBInAppMessageManager {
     );
   }
 
+  /// Downloads and saves the image for an in-app message
+  /// @param inAppMessage The in-app message
+  /// @returns A Future that completes with the File where the image has been downloaded.
+  /// If the in-app message doesn't have an image it returns null.
   static Future<File> _downloadImage(MBInAppMessage inAppMessage) async {
     if (inAppMessage.image == null || inAppMessage.image == '') {
       return null;
@@ -221,6 +242,9 @@ class MBInAppMessageManager {
 
 //region message showed or not
 
+  /// If an in-app message has already been showed or not.
+  /// @param message The in-app message to show.
+  /// @returns A future that completes with a bool that tells if the message has been showed or not.
   static Future<bool> _messageHasBeenShowed(MBMessage message) async {
     if (message.id == null) {
       return false;
@@ -230,6 +254,8 @@ class MBInAppMessageManager {
     return showedMessages.contains(message.id.toString());
   }
 
+  /// Set the message as showed in shared_preferences
+  /// @param message The in-app message to set as showed.
   static Future<void> _setMessageShowed(MBMessage message) async {
     if (message.id == null) {
       return;
@@ -245,6 +271,7 @@ class MBInAppMessageManager {
     }
   }
 
+  /// The key used to store showed messages in shared_preferences.
   static String get _showedMessageKey =>
       'com.mumble.mburger.messages.showedMessages';
 //endregion

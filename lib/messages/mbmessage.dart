@@ -6,6 +6,7 @@ import 'package:mbmessages/push_notifications/mbpush_message.dart';
 enum MBMessageType {
   /// An in-app message.
   inAppMessage,
+
   /// A push message.
   push,
 }

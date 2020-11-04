@@ -58,7 +58,13 @@ class _MyAppState extends State<MyApp> {
       await MBPush.registerDevice(token).catchError(
         (error) => print(error),
       );
-      await MBPush.registerToTopic(MPTopic(code: 'Topic')).catchError(
+      await MBPush.registerToTopics(
+        [
+          await MBMessages.projectPushTopic(),
+          await MBMessages.devicePushTopic(),
+          MPTopic(code: 'Topic'),
+        ],
+      ).catchError(
         (error) => print(error),
       );
       print('Registered');

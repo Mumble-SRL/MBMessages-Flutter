@@ -1,19 +1,33 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 
-import 'package:flutter/cupertino.dart';
-
+/// This class represents the type of link attttached to a button
 enum MBInAppMessageButtonLinkType {
+  /// A web link
   link,
+
+  /// An in app link
   inApp,
 }
 
+/// This class represent a button of an in app message
 class MBInAppMessageButton {
+  /// The title of the button
   String title;
+
+  /// An optional color for the title
   Color titleColor;
+
+  /// An optional background color
   Color backgroundColor;
+
+  /// The link of the button
   String link;
+
+  /// The type of link of the button
   MBInAppMessageButtonLinkType linkType;
 
+  /// Initializes a button with the parameters passed
   MBInAppMessageButton({
     @required this.title,
     @required this.titleColor,
@@ -24,6 +38,8 @@ class MBInAppMessageButton {
     this.linkType = _linkTypeFromString(linkTypeString);
   }
 
+  /// Converts a string to a `MBInAppMessageButtonLinkType`
+  /// @param linkTypeString The string to convert.
   MBInAppMessageButtonLinkType _linkTypeFromString(String linkTypeString) {
     if (linkTypeString == 'link') {
       return MBInAppMessageButtonLinkType.link;
