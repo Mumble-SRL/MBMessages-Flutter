@@ -18,8 +18,8 @@ dependencies:
   http: ^0.12.0+4
   mburger: ^0.0.1+19
   mpush: ^0.0.1+2
-  path_provider: ^1.6.21
   path: ^1.7.0
+  path_provider: ^1.6.21
   shared_preferences: ^0.5.12+2
 
 dev_dependencies:

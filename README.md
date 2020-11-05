@@ -4,6 +4,16 @@ MBMessages is a plugin libary for [MBurger](https://mburger.cloud), that lets yo
 
 Using this library you can display the messages that you set up in the MBurger dashboard in your app. You can also setup and manage push notifications connected to your MBurger project.
 
+MBMessages depends on the following packages:
+
+ - [mburger](https://pub.dev/packages/mburger)
+ - [mpush](https://pub.dev/packages/mpush)
+ - [device_info](https://pub.dev/packages/device_info)
+ - [http](https://pub.dev/packages/http)
+ - [path](https://pub.dev/packages/path)
+ - [path_provider](https://pub.dev/packages/path_provider)
+ - [shared_preferences](https://pub.dev/packages/shared_preferences)
+
 # Installation
 
 You can install the MBAudience SDK using pub, add this to your pubspec.yaml file:
