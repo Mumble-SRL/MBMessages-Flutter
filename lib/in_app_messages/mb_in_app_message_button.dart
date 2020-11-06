@@ -43,7 +43,7 @@ class MBInAppMessageButton {
   MBInAppMessageButtonLinkType _linkTypeFromString(String linkTypeString) {
     if (linkTypeString == 'link') {
       return MBInAppMessageButtonLinkType.link;
-    } else if (linkTypeString == 'in_app') {
+    } else if (linkTypeString == 'in_app' || linkTypeString == 'inapp') {
       return MBInAppMessageButtonLinkType.inApp;
     }
     return MBInAppMessageButtonLinkType.link;
