@@ -1,6 +1,6 @@
 name: mbmessages
 description: MBMessages plugin for MBurger, that lets you manage push notifications and in-app messages.
-version: 0.0.1
+version: 0.0.1+1
 authors:
   - Lorenzo Oliveto <lorenzo.oliveto@mumbleideas.it>
   - Enrico Ori <enrico.ori@mumbleideas.it>
@@ -18,8 +18,8 @@ dependencies:
   http: ^0.12.0+4
   mburger: ^0.0.1+19
   mpush: ^0.0.1+2
-  path_provider: ^1.6.21
   path: ^1.7.0
+  path_provider: ^1.6.21
   shared_preferences: ^0.5.12+2
 
 dev_dependencies:
