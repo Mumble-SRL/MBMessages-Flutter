@@ -8,6 +8,9 @@ enum MBInAppMessageButtonLinkType {
 
   /// An in app link
   inApp,
+
+  /// An MBurger section
+  section,
 }
 
 /// This class represent a button of an in app message
@@ -24,6 +27,12 @@ class MBInAppMessageButton {
   /// The link of the button
   String link;
 
+  /// If the link type is `MBInAppMessageButtonLinkType.section`, the id of the MBurger section
+  int sectionId;
+
+  /// If the link type is `MBInAppMessageButtonLinkType.section`, the id of the MBurger block of the section
+  int blockId;
+
   /// The type of link of the button
   MBInAppMessageButtonLinkType linkType;
 
@@ -33,6 +42,8 @@ class MBInAppMessageButton {
     @required this.titleColor,
     @required this.backgroundColor,
     @required this.link,
+    @required this.blockId,
+    @required this.sectionId,
     @required String linkTypeString,
   }) {
     this.linkType = _linkTypeFromString(linkTypeString);
@@ -45,6 +56,8 @@ class MBInAppMessageButton {
       return MBInAppMessageButtonLinkType.link;
     } else if (linkTypeString == 'in_app' || linkTypeString == 'inapp') {
       return MBInAppMessageButtonLinkType.inApp;
+    } else if (linkTypeString == 'section') {
+      return MBInAppMessageButtonLinkType.section;
     }
     return MBInAppMessageButtonLinkType.link;
   }

@@ -1,3 +1,3 @@
-## 0.0.1+1
+## 0.0.1+2
 
-* Fixed in app message button link.
+* Fixed in app message button link for MBurger section.
