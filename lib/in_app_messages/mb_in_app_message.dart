@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -105,12 +106,21 @@ class MBInAppMessage {
     if (button1Title != null &&
         button1Link != null &&
         button1LinkType != null) {
+      int sectionId;
+      int blockId;
+      if (button1LinkType == 'section') {
+        Map<String, dynamic> actionMap = _extractSectionAndBlockId(button1Link);
+        sectionId = actionMap['sectionId'];
+        blockId = actionMap['blockId'];
+      }
       buttons.add(
         MBInAppMessageButton(
           title: button1Title,
           titleColor: _colorFromHexString(button1TitleColor),
           backgroundColor: _colorFromHexString(button1BackgroundColor),
           link: button1Link,
+          sectionId: sectionId,
+          blockId: blockId,
           linkTypeString: button1LinkType,
         ),
       );
@@ -123,16 +133,44 @@ class MBInAppMessage {
     if (button2Title != null &&
         button2Link != null &&
         button2LinkType != null) {
+      int sectionId;
+      int blockId;
+      if (button2LinkType == 'section') {
+        Map<String, dynamic> actionMap = _extractSectionAndBlockId(button1Link);
+        sectionId = actionMap['sectionId'];
+        blockId = actionMap['blockId'];
+      }
       buttons.add(
         MBInAppMessageButton(
           title: button2Title,
           titleColor: _colorFromHexString(button2TitleColor),
           backgroundColor: _colorFromHexString(button2BackgroundColor),
           link: button2Link,
+          sectionId: sectionId,
+          blockId: blockId,
           linkTypeString: button2LinkType,
         ),
       );
     }
+  }
+
+  /// Extracts the section id and the block id from a string value of the action
+  Map<String, int> _extractSectionAndBlockId(String value) {
+    int sectionId = int.tryParse(value);
+    if (sectionId != null) {
+      return {'sectionId': sectionId};
+    } else {
+      try {
+        Map<String, dynamic> jsonMap = json.decode(value);
+        int sectionId = jsonMap['section_id'];
+        int blockId = jsonMap['block_id'];
+        return {
+          'sectionId': sectionId,
+          'blockId': blockId,
+        };
+      } catch (e) {}
+    }
+    return null;
   }
 
   /// Converts a string to a `MBInAppMessageStyle`.
