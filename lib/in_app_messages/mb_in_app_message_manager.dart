@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,6 +20,9 @@ import 'package:path/path.dart';
 
 /// Main class that manages the displaying of in-app messages, and keeps references of what messages have already been displayed.
 class MBInAppMessageManager {
+  /// If the manager is showing messages, this var has the messages showed.
+  static List<MBMessage> _showingMessages;
+
   /// Present an array of in-app messages, if they're not been already presented
   /// @param messages The messages that needs to be presented
   /// @param ignoreShowedMessages if this is true a message will be displayed even if it has already been displayed
@@ -30,14 +34,29 @@ class MBInAppMessageManager {
     MBInAppMessageTheme Function(MBInAppMessage) themeForMessage,
     Function(MBInAppMessageButton) onButtonPressed,
   }) async {
+    if (_showingMessages != null) {
+      List<int> showingMessagesIds = _showingMessages.map((m) => m.id).toList();
+      List<MBMessage> messagesWithoutShowedMessages = messages;
+      messagesWithoutShowedMessages
+          .removeWhere((m) => showingMessagesIds.contains(m.id));
+      await Future.delayed(Duration(seconds: 1));
+      presentMessages(
+        messages: messagesWithoutShowedMessages,
+        ignoreShowedMessages: ignoreShowedMessages,
+        themeForMessage: themeForMessage,
+        onButtonPressed: onButtonPressed,
+      );
+      return;
+    }
+
     List<MBMessage> messagesToShow = messages
         .where((message) => message.messageType == MBMessageType.inAppMessage)
         .toList();
     if (!ignoreShowedMessages) {
       List<MBMessage> messages = [];
       for (MBMessage message in messagesToShow) {
-        bool messageHasBeenShowed = await _messageHasBeenShowed(message);
-        if (!messageHasBeenShowed) {
+        bool needsToShowMessage = await _needsToShowMessage(message);
+        if (needsToShowMessage) {
           messages.add(message);
         }
       }
@@ -48,6 +67,7 @@ class MBInAppMessageManager {
       return;
     }
 
+    _showingMessages = messages;
     _presentMessage(
       index: 0,
       messages: messagesToShow,
@@ -68,16 +88,19 @@ class MBInAppMessageManager {
     @required Function(MBInAppMessageButton) onButtonPressed,
   }) async {
     if (index >= messages.length) {
+      _showingMessages = null;
       return;
     }
     MBMessage message = messages[index];
     if (message.inAppMessage == null) {
+      _showingMessages = null;
       return;
     }
 
     MBInAppMessage inAppMessage = message.inAppMessage;
 
     if (MBMessages.contextCallback == null) {
+      _showingMessages = null;
       return;
     }
 
@@ -141,6 +164,8 @@ class MBInAppMessageManager {
           themeForMessage: themeForMessage,
           onButtonPressed: onButtonPressed,
         );
+      } else {
+        _showingMessages = null;
       }
     }
   }
@@ -242,16 +267,26 @@ class MBInAppMessageManager {
 
 //region message showed or not
 
-  /// If an in-app message has already been showed or not.
+  /// If the manager needs to show an in-app message or not.
   /// @param message The in-app message to show.
-  /// @returns A future that completes with a bool that tells if the message has been showed or not.
-  static Future<bool> _messageHasBeenShowed(MBMessage message) async {
+  /// @returns A future that completes with a bool that tells if the message needs to be showed or not.
+  static Future<bool> _needsToShowMessage(MBMessage message) async {
+    if (message.endDate.millisecondsSinceEpoch <
+        DateTime.now().millisecondsSinceEpoch) {
+      return false;
+    }
     if (message.id == null) {
       return false;
     }
+    Map<int, int> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> showedMessages = prefs.getStringList(_showedMessageKey) ?? [];
-    return showedMessages.contains(message.id.toString());
+    String showedMessagesString = prefs.getString(_showedMessageKey);
+    if (showedMessagesString != null) {
+      showedMessagesCount =
+          Map<int, int>.from(json.decode(showedMessagesString));
+    }
+    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    return messageShowCount <= message.repeatTimes;
   }
 
   /// Set the message as showed in shared_preferences
@@ -260,19 +295,20 @@ class MBInAppMessageManager {
     if (message.id == null) {
       return;
     }
+    Map<int, int> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> showedMessages = prefs.getStringList(_showedMessageKey) ?? [];
-    if (!showedMessages.contains(message.id)) {
-      showedMessages.add(message.id.toString());
-      await prefs.setStringList(
-        _showedMessageKey,
-        showedMessages,
-      );
+    String showedMessagesString = prefs.getString(_showedMessageKey);
+    if (showedMessagesString != null) {
+      showedMessagesCount =
+          Map<int, int>.from(json.decode(showedMessagesString));
     }
+    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    showedMessagesCount[message.id] = messageShowCount + 1;
+    await prefs.setString(_showedMessageKey, json.encode(showedMessagesCount));
   }
 
   /// The key used to store showed messages in shared_preferences.
   static String get _showedMessageKey =>
-      'com.mumble.mburger.messages.showedMessages';
+      'com.mumble.mburger.messages.showedMessages.count';
 //endregion
 }

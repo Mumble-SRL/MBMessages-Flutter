@@ -43,6 +43,9 @@ class MBMessage {
   /// The number of days to wait to show the message.
   int sendAfterDays;
 
+  /// The number of times this message needs to be repeated.
+  int repeatTimes;
+
   /// The triggers for the messages.
   dynamic triggers;
 
@@ -58,6 +61,7 @@ class MBMessage {
     @required this.endDate,
     @required this.automationIsOn,
     @required this.sendAfterDays,
+    @required this.repeatTimes,
     @required this.triggers,
   });
 
@@ -92,6 +96,7 @@ class MBMessage {
     }
 
     sendAfterDays = dictionary['send_after_days'];
+    repeatTimes = dictionary['repeat'];
 
     triggers = dictionary['triggers'] ?? null;
   }

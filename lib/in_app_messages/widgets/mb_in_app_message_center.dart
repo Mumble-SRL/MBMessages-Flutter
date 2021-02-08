@@ -45,10 +45,12 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
 
   @override
   void initState() {
-    timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-      timer.cancel();
-      Navigator.of(widget.mainContext).pop(true);
-    });
+    if (inAppMessage.duration != -1 && inAppMessage.duration != null) {
+      timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
+        timer.cancel();
+        Navigator.of(widget.mainContext).pop(true);
+      });
+    }
     super.initState();
   }
 

@@ -27,7 +27,7 @@ class MBInAppMessage {
   /// The style of the message
   MBInAppMessageStyle style;
 
-  /// The duration it will be on screen, after this duration the message will disappear automatically, the default is 5 seconds
+  /// The duration it will be on screen, after this duration the message will disappear automatically, by default it stays on screen until the user closes it
   double duration;
 
   /// The title of the message, it's optional and defaults to `null`.
@@ -75,7 +75,7 @@ class MBInAppMessage {
     if (dictionary['duration'] != null) {
       duration = dictionary['duration'];
     } else {
-      duration = 5;
+      duration = -1;
     }
 
     title = dictionary['title'];
