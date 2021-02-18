@@ -47,7 +47,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   void initState() {
     if (inAppMessage.duration != -1 && inAppMessage.duration != null) {
       timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-        timer.cancel();
+        timer?.cancel();
         Navigator.of(widget.mainContext).pop(true);
       });
     }
@@ -56,7 +56,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -221,7 +221,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   /// Function called when a button is pressed.
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
-    timer.cancel();
+    timer?.cancel();
     Navigator.of(widget.mainContext).pop(false);
     await Future.delayed(Duration(milliseconds: 300));
     if (widget.onButtonPressed != null) {
@@ -259,7 +259,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
 
   /// Function called when close is pressed.
   _closePressed() async {
-    timer.cancel();
+    timer?.cancel();
     Navigator.of(widget.mainContext).pop(true);
     await Future.delayed(Duration(milliseconds: 300));
   }

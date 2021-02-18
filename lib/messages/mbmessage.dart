@@ -84,10 +84,10 @@ class MBMessage {
     }
 
     int startDateInt = dictionary['starts_at'] ?? 0;
-    startDate = DateTime.fromMicrosecondsSinceEpoch(startDateInt * 1000);
+    startDate = DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000);
 
     int endDateInt = dictionary['ends_at'] ?? 0;
-    endDate = DateTime.fromMicrosecondsSinceEpoch(endDateInt * 1000);
+    endDate = DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000);
 
     if (dictionary['automation'] is int) {
       automationIsOn = dictionary['automation'] == 1;

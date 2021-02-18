@@ -130,27 +130,25 @@ class MBInAppMessageManager {
     bool result = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations
+          .of(context)
+          .modalBarrierDismissLabel,
       barrierColor:
-          isBanner ? Colors.transparent : Colors.black.withOpacity(0.5),
+      isBanner ? Colors.transparent : Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 300),
-      transitionBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        Widget child,
-      ) =>
+      transitionBuilder: (BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,) =>
           _transitionForMessage(
-        message,
-        animation,
-        child,
-      ),
-      pageBuilder: (
-        BuildContext buildContext,
-        Animation animation,
-        Animation secondaryAnimation,
-      ) =>
-          widget,
+            message,
+            animation,
+            child,
+          ),
+      pageBuilder: (BuildContext buildContext,
+          Animation animation,
+          Animation secondaryAnimation,) =>
+      widget,
     );
 
     /// Result is false if the message has been hidden by a button press
@@ -223,11 +221,9 @@ class MBInAppMessageManager {
 
   /// Builds the transition for the message passed.
   /// All in-app messages appear from the bottom with the exception of bannerTop that appears from the top.
-  static Widget _transitionForMessage(
-    MBMessage message,
-    Animation animation,
-    Widget child,
-  ) {
+  static Widget _transitionForMessage(MBMessage message,
+      Animation animation,
+      Widget child,) {
     MBInAppMessage inAppMessage = message.inAppMessage;
     Animation<Offset> offset;
 
@@ -271,21 +267,25 @@ class MBInAppMessageManager {
   /// @param message The in-app message to show.
   /// @returns A future that completes with a bool that tells if the message needs to be showed or not.
   static Future<bool> _needsToShowMessage(MBMessage message) async {
-    if (message.endDate.millisecondsSinceEpoch <
-        DateTime.now().millisecondsSinceEpoch) {
-      return false;
+    if (message.automationIsOn) {
+      if (message.endDate.millisecondsSinceEpoch <
+          DateTime
+              .now()
+              .millisecondsSinceEpoch) {
+        return false;
+      }
     }
     if (message.id == null) {
       return false;
     }
-    Map<int, int> showedMessagesCount = {};
+    Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String showedMessagesString = prefs.getString(_showedMessageKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-          Map<int, int>.from(json.decode(showedMessagesString));
+      Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
-    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     return messageShowCount <= message.repeatTimes;
   }
 
@@ -295,15 +295,15 @@ class MBInAppMessageManager {
     if (message.id == null) {
       return;
     }
-    Map<int, int> showedMessagesCount = {};
+    Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String showedMessagesString = prefs.getString(_showedMessageKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-          Map<int, int>.from(json.decode(showedMessagesString));
+      Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
-    int messageShowCount = showedMessagesCount[message.id] ?? 0;
-    showedMessagesCount[message.id] = messageShowCount + 1;
+    int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
+    showedMessagesCount[message.id.toString()] = messageShowCount + 1;
     await prefs.setString(_showedMessageKey, json.encode(showedMessagesCount));
   }
 

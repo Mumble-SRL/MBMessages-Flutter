@@ -44,16 +44,18 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
 
   @override
   void initState() {
-    timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-      timer.cancel();
-      Navigator.of(widget.mainContext).pop(true);
-    });
+    if (inAppMessage.duration != -1 && inAppMessage.duration != null) {
+      timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
+        timer?.cancel();
+        Navigator.of(widget.mainContext).pop(true);
+      });
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -235,7 +237,7 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
   /// Function called when a button is pressed.
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
-    timer.cancel();
+    timer?.cancel();
     Navigator.of(widget.mainContext).pop(false);
     await Future.delayed(Duration(milliseconds: 300));
     if (widget.onButtonPressed != null) {
