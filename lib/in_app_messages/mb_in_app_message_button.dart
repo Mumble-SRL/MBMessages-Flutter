@@ -11,6 +11,9 @@ enum MBInAppMessageButtonLinkType {
 
   /// An MBurger section
   section,
+
+  /// No action
+  noAction,
 }
 
 /// This class represent a button of an in app message
@@ -58,7 +61,9 @@ class MBInAppMessageButton {
       return MBInAppMessageButtonLinkType.inApp;
     } else if (linkTypeString == 'section') {
       return MBInAppMessageButtonLinkType.section;
+    } else if (linkTypeString == 'no-action') {
+      return MBInAppMessageButtonLinkType.noAction;
     }
-    return MBInAppMessageButtonLinkType.link;
+    return MBInAppMessageButtonLinkType.noAction;
   }
 }

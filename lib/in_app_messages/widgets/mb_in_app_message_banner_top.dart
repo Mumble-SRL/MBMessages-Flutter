@@ -70,7 +70,10 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(height: MediaQuery.of(context).padding.top + 10),
+        Container(height: MediaQuery
+            .of(context)
+            .padding
+            .top + 10),
         Dismissible(
           direction: DismissDirection.up,
           key: const Key('mburger.mbmessages.bannerTop'),
@@ -78,8 +81,14 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: 100,
-              minWidth: MediaQuery.of(context).size.width - 20,
-              maxWidth: MediaQuery.of(context).size.width - 20,
+              minWidth: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 20,
+              maxWidth: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 20,
             ),
             child: Container(
               decoration: BoxDecoration(
@@ -93,6 +102,7 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
                 ],
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,16 +167,16 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
         children: [
           hasTitle
               ? Text(
-                  inAppMessage.title,
-                  style: titleStyle,
-                )
+            inAppMessage.title,
+            style: titleStyle,
+          )
               : Container(),
           Container(height: hasTitle && hasBody ? 10 : 0),
           hasBody
               ? Text(
-                  inAppMessage.body,
-                  style: bodyStyle,
-                )
+            inAppMessage.body,
+            style: bodyStyle,
+          )
               : Container(),
         ],
       ),
@@ -201,15 +211,15 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
             Container(width: has2Buttons ? 10 : 0),
             has2Buttons
                 ? Expanded(
-                    child: MBInAppMessageButtonWidget(
-                      mainContext: widget.mainContext,
-                      button: inAppMessage.buttons[1],
-                      height: buttonHeight,
-                      onTap: () => _buttonPressed(inAppMessage.buttons[1]),
-                      theme: widget.theme,
-                      isButton1: false,
-                    ),
-                  )
+              child: MBInAppMessageButtonWidget(
+                mainContext: widget.mainContext,
+                button: inAppMessage.buttons[1],
+                height: buttonHeight,
+                onTap: () => _buttonPressed(inAppMessage.buttons[1]),
+                theme: widget.theme,
+                isButton1: false,
+              ),
+            )
                 : Container(),
           ],
         ),

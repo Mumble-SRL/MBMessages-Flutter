@@ -104,7 +104,6 @@ class MBInAppMessage {
     String button1Link = dictionary['cta_action'];
     String button1LinkType = dictionary['cta_action_type'];
     if (button1Title != null &&
-        button1Link != null &&
         button1LinkType != null) {
       int sectionId;
       int blockId;
@@ -131,7 +130,6 @@ class MBInAppMessage {
     String button2Link = dictionary['cta2_action'];
     String button2LinkType = dictionary['cta2_action_type'];
     if (button2Title != null &&
-        button2Link != null &&
         button2LinkType != null) {
       int sectionId;
       int blockId;

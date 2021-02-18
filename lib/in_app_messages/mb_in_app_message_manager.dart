@@ -106,9 +106,6 @@ class MBInAppMessageManager {
 
     BuildContext context = MBMessages.contextCallback();
 
-    bool isBanner = inAppMessage.style == MBInAppMessageStyle.bannerTop ||
-        inAppMessage.style == MBInAppMessageStyle.bannerBottom;
-
     MBInAppMessageTheme theme = themeForMessage != null
         ? themeForMessage(inAppMessage)
         : MBInAppMessageTheme.defaultThemeForMessage(context, inAppMessage);
@@ -133,8 +130,7 @@ class MBInAppMessageManager {
       barrierLabel: MaterialLocalizations
           .of(context)
           .modalBarrierDismissLabel,
-      barrierColor:
-      isBanner ? Colors.transparent : Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 300),
       transitionBuilder: (BuildContext context,
           Animation<double> animation,
