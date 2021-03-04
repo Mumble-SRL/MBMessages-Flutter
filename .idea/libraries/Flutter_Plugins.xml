@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../mpush" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-0.1.2+7" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/device_info-1.0.0" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.12+4" />
@@ -13,6 +12,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.27" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+8" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mpush-0.0.1+6" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
