@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   device_info: ^2.0.0
-  http: ^0.13.0
+  http: ^0.12.0+2
   mburger: ^1.0.0
   mpush: ^0.0.1+8
   path: ^1.8.0
