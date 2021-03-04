@@ -14,7 +14,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  device_info: ^2.0.0
+  device_info: '>=0.4.2+9 <2.0.0'
   http: ^0.12.0+2
   mburger: ^1.0.0
   mpush: ^0.0.1+8
