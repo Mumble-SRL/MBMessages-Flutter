@@ -21,7 +21,7 @@ import 'package:path/path.dart';
 /// Main class that manages the displaying of in-app messages, and keeps references of what messages have already been displayed.
 class MBInAppMessageManager {
   /// If the manager is showing messages, this var has the messages showed.
-  static List<MBMessage> _showingMessages;
+  static List<MBMessage>? _showingMessages;
 
   /// Present an array of in-app messages, if they're not been already presented
   /// @param messages The messages that needs to be presented
@@ -29,13 +29,16 @@ class MBInAppMessageManager {
   /// @param themeForMessage A function that provides the theme of an in-app message.
   /// @param onButtonPressed Function called when a button is pressed.
   static void presentMessages({
-    @required List<MBMessage> messages,
+    required List<MBMessage> messages,
     bool ignoreShowedMessages: false,
-    MBInAppMessageTheme Function(MBInAppMessage) themeForMessage,
-    Function(MBInAppMessageButton) onButtonPressed,
+    MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage,
+    Function(MBInAppMessageButton)? onButtonPressed,
   }) async {
     if (_showingMessages != null) {
-      List<int> showingMessagesIds = _showingMessages.map((m) => m.id).toList();
+      List<int> showingMessagesIds = [];
+      if (_showingMessages != null) {
+        showingMessagesIds = _showingMessages!.map((m) => m.id).toList();
+      }
       List<MBMessage> messagesWithoutShowedMessages = messages;
       messagesWithoutShowedMessages
           .removeWhere((m) => showingMessagesIds.contains(m.id));
@@ -82,29 +85,36 @@ class MBInAppMessageManager {
   /// @param themeForMessage A function that provides the theme of an in-app message.
   /// @param onButtonPressed Function called when a button is pressed.
   static _presentMessage({
-    @required int index,
-    @required List<MBMessage> messages,
-    @required MBInAppMessageTheme Function(MBInAppMessage) themeForMessage,
-    @required Function(MBInAppMessageButton) onButtonPressed,
+    required int index,
+    required List<MBMessage> messages,
+    required MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage,
+    required Function(MBInAppMessageButton)? onButtonPressed,
   }) async {
     if (index >= messages.length) {
       _showingMessages = null;
       return;
     }
     MBMessage message = messages[index];
-    if (message.inAppMessage == null) {
+    MBInAppMessage? inAppMessage = message.inAppMessage;
+    if (inAppMessage == null) {
       _showingMessages = null;
       return;
     }
-
-    MBInAppMessage inAppMessage = message.inAppMessage;
 
     if (MBMessages.contextCallback == null) {
       _showingMessages = null;
       return;
     }
 
-    BuildContext context = MBMessages.contextCallback();
+    BuildContext? context;
+    if (MBMessages.contextCallback != null) {
+      context = MBMessages.contextCallback!();
+    }
+
+    if (context == null) {
+      _showingMessages = null;
+      return;
+    }
 
     MBInAppMessageTheme theme = themeForMessage != null
         ? themeForMessage(inAppMessage)
@@ -124,33 +134,37 @@ class MBInAppMessageManager {
     await _setMessageShowed(message);
     MBMessageMetrics.inAppMessageShowed(message);
 
-    bool result = await showGeneralDialog(
+    dynamic? result = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 300),
-      transitionBuilder: (BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          Widget child,) =>
+      transitionBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) =>
           _transitionForMessage(
-            message,
-            animation,
-            child,
-          ),
-      pageBuilder: (BuildContext buildContext,
-          Animation animation,
-          Animation secondaryAnimation,) =>
-      widget,
+        message,
+        animation,
+        child,
+      ),
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) =>
+          widget,
     );
+
+    bool booleanResult = result is bool ? result : false;
 
     /// Result is false if the message has been hidden by a button press
     /// Otherwise it's true, defaults to true if it's null because dismissing it
     /// from the barrier returns null
-    if (result ?? true) {
+    if (booleanResult) {
       if (index + 1 < messages.length) {
         _presentMessage(
           index: index + 1,
@@ -161,6 +175,8 @@ class MBInAppMessageManager {
       } else {
         _showingMessages = null;
       }
+    } else {
+      _showingMessages = null;
     }
   }
 
@@ -170,12 +186,15 @@ class MBInAppMessageManager {
   /// @param onButtonPressed Function called when a button is pressed.
   /// @param theme The theme that will be used in the message widget
   static Future<Widget> _widgetForInAppMessage({
-    @required BuildContext context,
-    @required MBMessage message,
-    @required Function(MBInAppMessageButton) onButtonPressed,
-    @required MBInAppMessageTheme theme,
+    required BuildContext context,
+    required MBMessage message,
+    required Function(MBInAppMessageButton)? onButtonPressed,
+    required MBInAppMessageTheme theme,
   }) async {
-    MBInAppMessage inAppMessage = message.inAppMessage;
+    MBInAppMessage? inAppMessage = message.inAppMessage;
+    if (inAppMessage == null) {
+      return Container();
+    }
     switch (inAppMessage.style) {
       case MBInAppMessageStyle.bannerTop:
         return MBInAppMessageBannerTop(
@@ -184,7 +203,6 @@ class MBInAppMessageManager {
           onButtonPressed: onButtonPressed,
           theme: theme,
         );
-        break;
       case MBInAppMessageStyle.bannerBottom:
         return MBInAppMessageBannerBottom(
           mainContext: context,
@@ -192,7 +210,6 @@ class MBInAppMessageManager {
           onButtonPressed: onButtonPressed,
           theme: theme,
         );
-        break;
       case MBInAppMessageStyle.center:
         return MBInAppMessageCenter(
           mainContext: context,
@@ -200,9 +217,8 @@ class MBInAppMessageManager {
           onButtonPressed: onButtonPressed,
           theme: theme,
         );
-        break;
       case MBInAppMessageStyle.fullscreenImage:
-        File imageFile = await _downloadImage(inAppMessage);
+        File? imageFile = await _downloadImage(inAppMessage);
         return MBInAppMessageFullscreenImage(
           mainContext: context,
           message: message,
@@ -210,20 +226,20 @@ class MBInAppMessageManager {
           onButtonPressed: onButtonPressed,
           theme: theme,
         );
-        break;
     }
-    return Container();
   }
 
   /// Builds the transition for the message passed.
   /// All in-app messages appear from the bottom with the exception of bannerTop that appears from the top.
-  static Widget _transitionForMessage(MBMessage message,
-      Animation animation,
-      Widget child,) {
-    MBInAppMessage inAppMessage = message.inAppMessage;
+  static Widget _transitionForMessage(
+    MBMessage message,
+    Animation<double> animation,
+    Widget child,
+  ) {
+    MBInAppMessage? inAppMessage = message.inAppMessage;
     Animation<Offset> offset;
 
-    if (inAppMessage.style == MBInAppMessageStyle.bannerTop) {
+    if (inAppMessage?.style == MBInAppMessageStyle.bannerTop) {
       offset = Tween<Offset>(
         begin: Offset(0.0, -1.0),
         end: Offset(0.0, 0.0),
@@ -244,13 +260,19 @@ class MBInAppMessageManager {
   /// @param inAppMessage The in-app message
   /// @returns A Future that completes with the File where the image has been downloaded.
   /// If the in-app message doesn't have an image it returns null.
-  static Future<File> _downloadImage(MBInAppMessage inAppMessage) async {
+  static Future<File?> _downloadImage(MBInAppMessage inAppMessage) async {
     if (inAppMessage.image == null || inAppMessage.image == '') {
       return null;
     }
 
-    final fileName = basename(inAppMessage.image);
-    final response = await http.get(inAppMessage.image);
+    String image = inAppMessage.image!;
+    Uri? imageUri = Uri.tryParse(image);
+    if (imageUri == null) {
+      return null;
+    }
+
+    final fileName = basename(image);
+    final response = await http.get(imageUri);
     final documentDirectory = await getApplicationDocumentsDirectory();
     final file = File(join(documentDirectory.path, fileName));
     file.writeAsBytesSync(response.bodyBytes);
@@ -265,21 +287,16 @@ class MBInAppMessageManager {
   static Future<bool> _needsToShowMessage(MBMessage message) async {
     if (message.automationIsOn) {
       if (message.endDate.millisecondsSinceEpoch <
-          DateTime
-              .now()
-              .millisecondsSinceEpoch) {
+          DateTime.now().millisecondsSinceEpoch) {
         return false;
       }
     }
-    if (message.id == null) {
-      return false;
-    }
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String showedMessagesString = prefs.getString(_showedMessageKey);
+    String? showedMessagesString = prefs.getString(_showedMessageKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<String, dynamic>.from(json.decode(showedMessagesString));
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     return messageShowCount <= message.repeatTimes;
@@ -288,15 +305,12 @@ class MBInAppMessageManager {
   /// Set the message as showed in shared_preferences
   /// @param message The in-app message to set as showed.
   static Future<void> _setMessageShowed(MBMessage message) async {
-    if (message.id == null) {
-      return;
-    }
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String showedMessagesString = prefs.getString(_showedMessageKey);
+    String? showedMessagesString = prefs.getString(_showedMessageKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<String, dynamic>.from(json.decode(showedMessagesString));
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     showedMessagesCount[message.id.toString()] = messageShowCount + 1;

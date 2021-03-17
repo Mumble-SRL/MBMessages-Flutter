@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 
 /// The presentation style of the message, this enum represents the style in which the message will appear
@@ -22,95 +21,109 @@ enum MBInAppMessageStyle {
 /// This class represents an in app message retrieved by the MBurger in app messages APIs
 class MBInAppMessage {
   /// The id of the message
-  int id;
+  final int id;
 
   /// The style of the message
-  MBInAppMessageStyle style;
+  final MBInAppMessageStyle style;
 
   /// The duration it will be on screen, after this duration the message will disappear automatically, by default it stays on screen until the user closes it
-  double duration;
+  final double duration;
 
   /// The title of the message, it's optional and defaults to `null`.
-  String title;
+  final String? title;
 
   /// An optional color for the title, defaults to `null`.
-  Color titleColor;
+  final Color? titleColor;
 
   /// The body of the message
-  String body;
+  final String? body;
 
   /// An optional color for the body, defaults to `null`.
-  Color bodyColor;
+  final Color? bodyColor;
 
   /// An optional image of the message, defaults to `null`.
-  String image;
+  final String? image;
 
   /// An optional background color, defaults to `null`.
-  Color backgroundColor;
+  final Color? backgroundColor;
 
   /// An array of buttons, max 2 elements
-  List<MBInAppMessageButton> buttons;
+  final List<MBInAppMessageButton>? buttons;
 
   /// Initializes a message with the parameters passed
   MBInAppMessage({
-    @required this.id,
-    @required this.style,
-    @required this.duration,
-    @required this.title,
-    @required this.titleColor,
-    @required this.body,
-    @required this.bodyColor,
-    @required this.image,
-    @required this.backgroundColor,
-    @required this.buttons,
+    required this.id,
+    required this.style,
+    required this.duration,
+    required this.title,
+    required this.titleColor,
+    required this.body,
+    required this.bodyColor,
+    required this.image,
+    required this.backgroundColor,
+    required this.buttons,
   });
 
   /// Initializes a message with the dictionary returned by the APIs.
-  MBInAppMessage.fromDictionary(Map<String, dynamic> dictionary) {
-    id = dictionary['id'];
+  factory MBInAppMessage.fromDictionary(Map<String, dynamic> dictionary) {
+    int id = dictionary['id'] is int ? dictionary['id'] : 0;
 
-    String styleString = dictionary['type'];
-    style = _styleFromString(styleString);
+    String? styleString = dictionary['type'];
+    MBInAppMessageStyle style = _styleFromString(styleString);
 
+    double duration = -1;
     if (dictionary['duration'] != null) {
-      duration = dictionary['duration'];
-    } else {
-      duration = -1;
+      if (dictionary['duration'] is double) {
+        duration = dictionary['duration'];
+      } else if (dictionary['duration'] is int) {
+        int intDuration = dictionary['duration'];
+        duration = intDuration.toDouble();
+      }
     }
 
-    title = dictionary['title'];
-    titleColor = _colorFromField(
+    String? title = dictionary['title'] is String ? dictionary['title'] : null;
+    Color? titleColor = _colorFromField(
       dictionary,
       'title_color',
     );
 
-    body = dictionary['content'];
-    bodyColor = _colorFromField(
+    String? body =
+        dictionary['content'] is String ? dictionary['content'] : null;
+    Color? bodyColor = _colorFromField(
       dictionary,
       'content_color',
     );
 
-    backgroundColor = _colorFromField(
+    Color? backgroundColor = _colorFromField(
       dictionary,
       'background_color',
     );
 
-    image = dictionary['image'];
+    String? image = dictionary['image'] is String ? dictionary['image'] : null;
 
-    buttons = [];
-    String button1Title = dictionary['cta_text'];
-    String button1TitleColor = dictionary['cta_text_color'];
-    String button1BackgroundColor = dictionary['cta_background_color'];
-    String button1Link = dictionary['cta_action'];
-    String button1LinkType = dictionary['cta_action_type'];
-    if (button1Title != null &&
-        button1LinkType != null) {
-      int sectionId;
-      int blockId;
+    List<MBInAppMessageButton> buttons = [];
+    String? button1Title =
+        dictionary['cta_text'] is String ? dictionary['cta_text'] : null;
+    String? button1TitleColor = dictionary['cta_text_color'] is String
+        ? dictionary['cta_text_color']
+        : null;
+    String? button1BackgroundColor =
+        dictionary['cta_background_color'] is String
+            ? dictionary['cta_background_color']
+            : null;
+    String? button1Link =
+        dictionary['cta_action'] is String ? dictionary['cta_action'] : null;
+    String? button1LinkType = dictionary['cta_action_type'] is String
+        ? dictionary['cta_action_type']
+        : null;
+    if (button1Title != null && button1LinkType != null) {
+      int? sectionId;
+      int? blockId;
       if (button1LinkType == 'section') {
-        Map<String, dynamic> actionMap = _extractSectionAndBlockId(button1Link);
-        sectionId = actionMap['sectionId'];
-        blockId = actionMap['blockId'];
+        Map<String, dynamic>? actionMap =
+            _extractSectionAndBlockId(button1Link);
+        sectionId = actionMap?['sectionId'];
+        blockId = actionMap?['blockId'];
       }
       buttons.add(
         MBInAppMessageButton(
@@ -124,19 +137,28 @@ class MBInAppMessage {
         ),
       );
     }
-    String button2Title = dictionary['cta2_text'];
-    String button2TitleColor = dictionary['cta2_text_color'];
-    String button2BackgroundColor = dictionary['cta2_background_color'];
-    String button2Link = dictionary['cta2_action'];
-    String button2LinkType = dictionary['cta2_action_type'];
-    if (button2Title != null &&
-        button2LinkType != null) {
-      int sectionId;
-      int blockId;
+    String? button2Title =
+        dictionary['cta2_text'] is String ? dictionary['cta2_text'] : null;
+    String? button2TitleColor = dictionary['cta2_text_color'] is String
+        ? dictionary['cta2_text_color']
+        : null;
+    String? button2BackgroundColor =
+        dictionary['cta2_background_color'] is String
+            ? dictionary['cta2_background_color']
+            : null;
+    String? button2Link =
+        dictionary['cta2_action'] is String ? dictionary['cta2_action'] : null;
+    String? button2LinkType = dictionary['cta2_action_type'] is String
+        ? dictionary['cta2_action_type']
+        : null;
+    if (button2Title != null && button2LinkType != null) {
+      int? sectionId;
+      int? blockId;
       if (button2LinkType == 'section') {
-        Map<String, dynamic> actionMap = _extractSectionAndBlockId(button1Link);
-        sectionId = actionMap['sectionId'];
-        blockId = actionMap['blockId'];
+        Map<String, dynamic>? actionMap =
+            _extractSectionAndBlockId(button1Link);
+        sectionId = actionMap?['sectionId'];
+        blockId = actionMap?['blockId'];
       }
       buttons.add(
         MBInAppMessageButton(
@@ -150,30 +172,45 @@ class MBInAppMessage {
         ),
       );
     }
+
+    return MBInAppMessage(
+      id: id,
+      style: style,
+      duration: duration,
+      title: title,
+      titleColor: titleColor,
+      body: body,
+      bodyColor: bodyColor,
+      image: image,
+      backgroundColor: backgroundColor,
+      buttons: buttons,
+    );
   }
 
   /// Extracts the section id and the block id from a string value of the action
-  Map<String, int> _extractSectionAndBlockId(String value) {
-    int sectionId = int.tryParse(value);
-    if (sectionId != null) {
-      return {'sectionId': sectionId};
-    } else {
-      try {
-        Map<String, dynamic> jsonMap = json.decode(value);
-        int sectionId = jsonMap['section_id'];
-        int blockId = jsonMap['block_id'];
-        return {
-          'sectionId': sectionId,
-          'blockId': blockId,
-        };
-      } catch (e) {}
+  static Map<String, int>? _extractSectionAndBlockId(String? value) {
+    if (value != null) {
+      int? sectionId = int.tryParse(value);
+      if (sectionId != null) {
+        return {'sectionId': sectionId};
+      } else {
+        try {
+          Map<String, dynamic> jsonMap = json.decode(value);
+          int sectionId = jsonMap['section_id'];
+          int blockId = jsonMap['block_id'];
+          return {
+            'sectionId': sectionId,
+            'blockId': blockId,
+          };
+        } catch (e) {}
+      }
     }
     return null;
   }
 
   /// Converts a string to a `MBInAppMessageStyle`.
   /// @param styleString The string to convert.
-  MBInAppMessageStyle _styleFromString(String styleString) {
+  static MBInAppMessageStyle _styleFromString(String? styleString) {
     if (styleString == 'banner_top') {
       return MBInAppMessageStyle.bannerTop;
     } else if (styleString == 'banner_bottom') {
@@ -189,7 +226,7 @@ class MBInAppMessage {
   /// Extract a `Color` from the object of the dictionary with the specified key.
   /// @param dictionary The dictionary.
   /// @param key The key.
-  Color _colorFromField(
+  static Color? _colorFromField(
     Map<String, dynamic> dictionary,
     String key,
   ) {
@@ -204,7 +241,7 @@ class MBInAppMessage {
 
   /// Converts an hex string to a Color object.
   /// @param hexString The string to convert.
-  Color _colorFromHexString(String hexString) {
+  static Color? _colorFromHexString(String? hexString) {
     if (hexString == null) {
       return null;
     }

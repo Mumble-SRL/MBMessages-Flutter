@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
             title: const Text('MBMessages example app'),
           ),
           body: Center(
-            child: FlatButton(
+            child: TextButton(
               child: Text(
                 'Configure push notifications',
               ),
@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
 
     MBPush.requestToken();
 
-    Map<String, dynamic> launchNotification = await MBPush.launchNotification();
+    Map<String, dynamic>? launchNotification = await MBPush.launchNotification();
     print(launchNotification);
   }
 }

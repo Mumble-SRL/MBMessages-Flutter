@@ -32,7 +32,7 @@ class MBMessages extends MBPlugin {
   /// A function to provide the `BuildContext` to show in-app messages.
   /// To present in-app messages `MBMessages` uses the `showDialog` function that needs a `BuildContext`.
   /// If you use a `MBMessagesBuilder` you don't have to set this and it will be handled automatically.
-  static BuildContext Function() contextCallback;
+  static BuildContext Function()? contextCallback;
 
   /// The delayed (in seconds) used to delay the presenting of the message after a successful fetch.
   /// The default is 1 second.
@@ -46,10 +46,10 @@ class MBMessages extends MBPlugin {
   bool debug = false;
 
   /// Use this function to provide a theme for in-app messages.
-  MBInAppMessageTheme Function(MBInAppMessage) themeForMessage;
+  MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage;
 
   /// Use this function to receive a callback when a button is pressed
-  Function(MBInAppMessageButton) onButtonPressed;
+  Function(MBInAppMessageButton)? onButtonPressed;
 
   /// Initializes an instance of MBMessages plugin
   /// @param messagesDelay The delayed (in seconds) used to delay the presenting of the message after a successful fetch. By default it's 1 second.
@@ -85,6 +85,7 @@ class MBMessages extends MBPlugin {
       await _performCheckMessages(fromStartup: true);
     }
   }
+
 //endregion
 
   /// This method checks the messages from the server and shows them, if needed.
@@ -94,7 +95,7 @@ class MBMessages extends MBPlugin {
   }
 
   /// Performs the check of messages from the server.
-  Future<void> _performCheckMessages({@required bool fromStartup}) async {
+  Future<void> _performCheckMessages({required bool fromStartup}) async {
     var defaultParameters = await MBManager.shared.defaultParameters();
     var headers = await MBManager.shared.headers(contentTypeJson: false);
 
@@ -115,9 +116,9 @@ class MBMessages extends MBPlugin {
     Map<String, dynamic> responseMap =
         MBManager.checkResponse(response.body, checkBody: false);
 
-    List<dynamic> messagesDictionaries = responseMap['body'];
+    List<dynamic>? messagesDictionaries = responseMap['body'];
     int messagesLength = messagesDictionaries?.length ?? 0;
-    if (messagesLength == 0) {
+    if (messagesLength == 0 || messagesDictionaries == null) {
       return null;
     }
 
@@ -133,7 +134,7 @@ class MBMessages extends MBPlugin {
       fromStartup,
     );
 
-    int delay = messagesDelay ?? 0;
+    int delay = messagesDelay;
     List<MBMessage> validMessages = messages
         .where((message) =>
             message.messageType == MBMessageType.inAppMessage &&
@@ -144,7 +145,7 @@ class MBMessages extends MBPlugin {
       await Future.delayed(Duration(seconds: delay.toInt()));
       MBInAppMessageManager.presentMessages(
         messages: validMessages,
-        ignoreShowedMessages: debug ?? false,
+        ignoreShowedMessages: debug,
         themeForMessage: themeForMessage,
         onButtonPressed: onButtonPressed,
       );
@@ -177,15 +178,15 @@ class MBMessages extends MBPlugin {
   }
 
   /// Callback called when a token is retrieved from APNS or FCM
-  static Function(String) get onToken => MBPush.onToken;
+  static Function(String)? get onToken => MBPush.onToken;
 
   /// Callback called when a token is retrieved from APNS or FCM
-  static set onToken(Function(String) onToken) {
+  static set onToken(Function(String)? onToken) {
     MBPush.onToken = onToken;
   }
 
   /// The notification that launched the app, if present, otherwise `null`.
-  static Future<Map<String, dynamic>> launchNotification() async =>
+  static Future<Map<String, dynamic>?> launchNotification() async =>
       MBPush.launchNotification();
 
   /// Configures the MBPush plugin with the callbacks.
@@ -194,22 +195,18 @@ class MBMessages extends MBPlugin {
   /// @param onNotificationTap Called when a push notification is tapped.
   /// @param androidNotificationsSettings Settings for the android notification.
   static configurePush({
-    @required Function(Map<String, dynamic>) onNotificationArrival,
-    @required Function(Map<String, dynamic>) onNotificationTap,
-    @required MPAndroidNotificationsSettings androidNotificationsSettings,
+    required Function(Map<String, dynamic>) onNotificationArrival,
+    required Function(Map<String, dynamic>) onNotificationTap,
+    required MPAndroidNotificationsSettings androidNotificationsSettings,
   }) {
     MBPush.configure(
       onNotificationArrival: (notification) {
         MBMessageMetrics.notificationArrived(notification);
-        if (onNotificationArrival != null) {
-          onNotificationArrival(notification);
-        }
+        onNotificationArrival(notification);
       },
       onNotificationTap: (notification) {
         MBMessageMetrics.notificationTapped(notification);
-        if (onNotificationTap != null) {
-          onNotificationTap(notification);
-        }
+        onNotificationTap(notification);
       },
       androidNotificationsSettings: androidNotificationsSettings,
     );
@@ -276,7 +273,7 @@ class MBMessages extends MBPlugin {
   /// A push topic that represents this device, used to send a push to only this device.
   /// @returns a future that completes with the device push topic.
   static Future<MPTopic> devicePushTopic() async {
-    String deviceId;
+    String deviceId = '';
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -285,15 +282,11 @@ class MBMessages extends MBPlugin {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       deviceId = iosInfo.identifierForVendor;
     }
-    if (deviceId != null) {
-      return MPTopic(
-        code: deviceId,
-        title: 'Device: $deviceId',
-        single: true,
-      );
-    } else {
-      return null;
-    }
+    return MPTopic(
+      code: deviceId,
+      title: 'Device: $deviceId',
+      single: true,
+    );
   }
 
 //endregion

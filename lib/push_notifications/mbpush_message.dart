@@ -1,30 +1,28 @@
-import 'package:flutter/foundation.dart';
-
 /// A push message
 class MBPushMessage {
   /// The id of the push message.
-  String id;
+  final String id;
 
   /// The title of the push message.
-  String title;
+  final String title;
 
   /// The body of the push message.
-  String body;
+  final String body;
 
   /// The push notification badge value.
-  int badge;
+  final int? badge;
 
   /// The push notification custom sound.
-  String sound;
+  final String? sound;
 
   /// The push notification launch image.
-  String launchImage;
+  final String? launchImage;
 
   /// Additional data for push notifications.
-  Map<String, dynamic> userInfo;
+  final Map<String, dynamic>? userInfo;
 
   /// If the push notification was sent or not by the server.
-  bool sent;
+  final bool sent;
 
   /// Initializes a new push message with the data given.
   /// @param id The id of the push message.
@@ -36,29 +34,37 @@ class MBPushMessage {
   /// @param userInfo Additional data for push notifications.
   /// @param sent If the push notification was sent or not by the server.
   MBPushMessage({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.badge,
-    @required this.sound,
-    @required this.launchImage,
-    @required this.userInfo,
-    @required this.sent,
+    required this.id,
+    required this.title,
+    required this.body,
+    this.badge,
+    this.sound,
+    this.launchImage,
+    this.userInfo,
+    required this.sent,
   });
 
   /// Initializes a push message from the dictionary returned from the APIs.
   /// @param dictionary The dictionary returned from the APIs.
-  MBPushMessage.fromDictionary(Map<String, dynamic> dictionary) {
-    id = dictionary['id'];
+  factory MBPushMessage.fromDictionary(Map<String, dynamic> dictionary) {
+    String id = dictionary['id'];
+    String title = '';
+    String body = '';
+    bool sent = false;
+    int? badge;
+    String? sound;
+
+    String? launchImage;
+    Map<String, dynamic>? userInfo;
 
     if (dictionary['payload'] != null) {
       Map<String, dynamic> payload = dictionary['payload'];
 
-      title = payload['title'];
-      body = payload['body'];
+      title = payload['title'] ?? '';
+      body = payload['body'] ?? '';
       if (payload['sent'] is int) {
         sent = payload['sent'] == 1;
-      } else {
+      } else if (payload['sent'] is bool){
         sent = payload['sent'];
       }
       badge = payload['badge'];
@@ -67,5 +73,16 @@ class MBPushMessage {
       launchImage = payload['launch-image'];
       userInfo = payload['custom'];
     }
+
+    return MBPushMessage(
+      id: id,
+      title: title,
+      body: body,
+      badge: badge,
+      sound: sound,
+      launchImage: launchImage,
+      userInfo: userInfo,
+      sent: sent,
+    );
   }
 }

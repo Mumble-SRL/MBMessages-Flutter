@@ -19,22 +19,22 @@ class MBInAppMessageFullscreenImage extends StatefulWidget {
   final MBMessage message;
 
   /// The file where the image has been downloaded.
-  final File imageFile;
+  final File? imageFile;
 
   /// Function called when the button is pressed.
-  final Function(MBInAppMessageButton) onButtonPressed;
+  final Function(MBInAppMessageButton)? onButtonPressed;
 
   /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
   /// Initializes a `MBInAppMessageFullscreenImage` with the parameters passed
   const MBInAppMessageFullscreenImage({
-    Key key,
-    @required this.mainContext,
-    @required this.message,
-    @required this.imageFile,
-    @required this.onButtonPressed,
-    @required this.theme,
+    Key? key,
+    required this.mainContext,
+    required this.message,
+    required this.imageFile,
+    required this.onButtonPressed,
+    required this.theme,
   });
 
   @override
@@ -45,18 +45,21 @@ class MBInAppMessageFullscreenImage extends StatefulWidget {
 class _MBInAppMessageFullscreenImageState
     extends State<MBInAppMessageFullscreenImage> {
   /// Returns the in-app message of this message
-  MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+  MBInAppMessage? get inAppMessage => widget.message.inAppMessage;
 
   /// Timer used to dismiss the message after the defined duration is passed.
-  Timer timer;
+  Timer? timer;
 
   @override
   void initState() {
-    if (inAppMessage.duration != -1 && inAppMessage.duration != null) {
-      timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-        timer?.cancel();
-        Navigator.of(widget.mainContext).pop(true);
-      });
+    MBInAppMessage? inAppMessage = this.inAppMessage;
+    if (inAppMessage != null) {
+      if (inAppMessage.duration != -1) {
+        timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
+          timer?.cancel();
+          Navigator.of(widget.mainContext).pop(true);
+        });
+      }
     }
     super.initState();
   }
@@ -69,12 +72,13 @@ class _MBInAppMessageFullscreenImageState
 
   @override
   Widget build(BuildContext context) {
-    Color containerColor = Colors.white;
-    if (inAppMessage.backgroundColor != null) {
-      containerColor = inAppMessage.backgroundColor;
-    } else {
-      containerColor = widget.theme.backgroundColor;
+    Color containerColor = widget.theme.backgroundColor ?? Colors.white;
+    if (inAppMessage != null) {
+      if (inAppMessage!.backgroundColor != null) {
+        containerColor = inAppMessage!.backgroundColor!;
+      }
     }
+
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -94,9 +98,19 @@ class _MBInAppMessageFullscreenImageState
           ),
           child: Stack(
             children: [
-              _image(),
-              _buttons(),
-              _closeButton(),
+              _MBInAppMessageFullscreenImageImageWidget(
+                imageFile: widget.imageFile,
+              ),
+              _MBInAppMessageFullscreenImageButtonsWidget(
+                mainContext: widget.mainContext,
+                inAppMessage: inAppMessage,
+                theme: widget.theme,
+                onButtonPressed: (button) => _buttonPressed(button),
+              ),
+              _MBInAppMessageFullscreenImageCloseWidget(
+                theme: widget.theme,
+                onTap: () => _closePressed(),
+              ),
             ],
           ),
         ),
@@ -104,26 +118,79 @@ class _MBInAppMessageFullscreenImageState
     );
   }
 
-  /// The image for the widget.
-  Widget _image() {
-    if (inAppMessage.image != null && inAppMessage.image != '') {
-      print(widget.imageFile);
+  /// Function called when a button is pressed.
+  /// The widget is dismissed and `onButtonPressed` is called.
+  _buttonPressed(MBInAppMessageButton button) async {
+    timer?.cancel();
+    Navigator.of(widget.mainContext).pop(false);
+    await Future.delayed(Duration(milliseconds: 300));
+    if (widget.onButtonPressed != null) {
+      widget.onButtonPressed!(button);
+    }
+  }
+
+  /// Function called when close is pressed.
+  _closePressed() async {
+    timer?.cancel();
+    Navigator.of(widget.mainContext).pop(true);
+    await Future.delayed(Duration(milliseconds: 300));
+  }
+}
+
+/// The image for the widget.
+class _MBInAppMessageFullscreenImageImageWidget extends StatelessWidget {
+  final File? imageFile;
+
+  const _MBInAppMessageFullscreenImageImageWidget({
+    Key? key,
+    required this.imageFile,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageFile != null) {
       return Image.file(
-        widget.imageFile,
+        imageFile!,
         fit: BoxFit.cover,
       );
     }
     return Container();
   }
+}
 
-  /// The buttons of the widget.
-  Widget _buttons() {
-    bool hasButtons = inAppMessage.buttons?.length != 0;
+/// The buttons of the widget.
+class _MBInAppMessageFullscreenImageButtonsWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageFullscreenImageButtonsWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.inAppMessage == null) {
+      return Container();
+    }
+    MBInAppMessage inAppMessage = this.inAppMessage!;
+    if (inAppMessage.buttons == null) {
+      return Container();
+    }
+
+    List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
+
+    bool hasButtons = buttons.length != 0;
     if (!hasButtons) {
       return Container();
     }
     const double buttonHeight = 44;
-    bool has2Buttons = inAppMessage.buttons.length == 2;
+    bool has2Buttons = buttons.length == 2;
     return Positioned.fill(
       child: Align(
         alignment: Alignment.bottomCenter,
@@ -140,11 +207,11 @@ class _MBInAppMessageFullscreenImageState
               children: [
                 Expanded(
                   child: MBInAppMessageButtonWidget(
-                    mainContext: widget.mainContext,
-                    button: inAppMessage.buttons[0],
+                    mainContext: mainContext,
+                    button: buttons[0],
                     height: buttonHeight,
-                    onTap: () => _buttonPressed(inAppMessage.buttons[0]),
-                    theme: widget.theme,
+                    onTap: () => onButtonPressed(buttons[0]),
+                    theme: theme,
                     isButton1: true,
                   ),
                 ),
@@ -152,11 +219,11 @@ class _MBInAppMessageFullscreenImageState
                 has2Buttons
                     ? Expanded(
                         child: MBInAppMessageButtonWidget(
-                          mainContext: widget.mainContext,
-                          button: inAppMessage.buttons[1],
+                          mainContext: mainContext,
+                          button: buttons[1],
                           height: buttonHeight,
-                          onTap: () => _buttonPressed(inAppMessage.buttons[1]),
-                          theme: widget.theme,
+                          onTap: () => onButtonPressed(buttons[1]),
+                          theme: theme,
                           isButton1: false,
                         ),
                       )
@@ -168,20 +235,21 @@ class _MBInAppMessageFullscreenImageState
       ),
     );
   }
+}
 
-  /// Function called when a button is pressed.
-  /// The widget is dismissed and `onButtonPressed` is called.
-  _buttonPressed(MBInAppMessageButton button) async {
-    timer?.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
-    if (widget.onButtonPressed != null) {
-      widget.onButtonPressed(button);
-    }
-  }
+/// The close button for this widget.
+class _MBInAppMessageFullscreenImageCloseWidget extends StatelessWidget {
+  final MBInAppMessageTheme theme;
+  final VoidCallback onTap;
 
-  /// The close button for this widget.
-  Widget _closeButton() {
+  const _MBInAppMessageFullscreenImageCloseWidget({
+    Key? key,
+    required this.theme,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned.fill(
       child: Align(
         alignment: Alignment.topRight,
@@ -192,26 +260,19 @@ class _MBInAppMessageFullscreenImageState
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: widget.theme.closeButtonBackgroundColor,
+                color: theme.closeButtonBackgroundColor,
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
               child: Icon(
                 Icons.close,
-                color: widget.theme.closeButtonColor,
+                color: theme.closeButtonColor,
                 size: 20,
               ),
             ),
-            onTap: () => _closePressed(),
+            onTap: () => onTap(),
           ),
         ),
       ),
     );
-  }
-
-  /// Function called when close is pressed.
-  _closePressed() async {
-    timer?.cancel();
-    Navigator.of(widget.mainContext).pop(true);
-    await Future.delayed(Duration(milliseconds: 300));
   }
 }
