@@ -9,12 +9,12 @@ repository: https://github.com/Mumble-SRL/MBMessages-Flutter
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
-  flutter: '>=2.0.0 <3.0.0'
+  flutter: '>=2.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  device_info: 2.0.0
+  device_info: ^2.0.0
   http: ^0.13.0
   mburger: ^2.0.0-beta
   mpush: ^1.0.0-beta
