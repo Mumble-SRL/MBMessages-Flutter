@@ -47,7 +47,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1) {
+      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -71,6 +71,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
         containerColor = inAppMessage!.backgroundColor!;
       }
     }
+    bool isBlockerMessage = inAppMessage?.blocker ?? false;
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -115,10 +116,15 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
                   ],
                 ),
               ),
-              _MBInAppMessageCenterCloseWidget(
-                theme: widget.theme,
-                onTap: () => _closePressed(),
-              ),
+              !isBlockerMessage
+                  ? _MBInAppMessageCenterCloseWidget(
+                      theme: widget.theme,
+                      onTap: () => _closePressed(),
+                    )
+                  : Container(
+                      width: 0,
+                      height: 0,
+                    ),
             ],
           ),
         ),
@@ -130,8 +136,11 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
+    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    if (!isBlockerMessage) {
+      Navigator.of(widget.mainContext).pop(false);
+      await Future.delayed(Duration(milliseconds: 300));
+    }
     if (widget.onButtonPressed != null) {
       widget.onButtonPressed!(button);
     }

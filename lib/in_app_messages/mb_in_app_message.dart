@@ -26,6 +26,9 @@ class MBInAppMessage {
   /// The style of the message
   final MBInAppMessageStyle style;
 
+  /// If the message should block the user when navigating the app.
+  final bool blocker;
+
   /// The duration it will be on screen, after this duration the message will disappear automatically, by default it stays on screen until the user closes it
   final double duration;
 
@@ -54,6 +57,7 @@ class MBInAppMessage {
   MBInAppMessage({
     required this.id,
     required this.style,
+    required this.blocker,
     required this.duration,
     required this.title,
     required this.titleColor,
@@ -173,9 +177,18 @@ class MBInAppMessage {
       );
     }
 
+    //TODO: set real key when backend is ready
+    bool blocker = false;
+    if (dictionary['blocking'] is int) {
+      blocker = dictionary['blocking'] == 1;
+    } else if (dictionary['blocking'] is bool) {
+      blocker = dictionary['blocking'] ?? false;
+    }
+
     return MBInAppMessage(
       id: id,
       style: style,
+      blocker: blocker,
       duration: duration,
       title: title,
       titleColor: titleColor,

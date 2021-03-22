@@ -47,7 +47,7 @@ class _MBInAppMessageBannerBottomState
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1) {
+      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -65,65 +65,29 @@ class _MBInAppMessageBannerBottomState
 
   @override
   Widget build(BuildContext context) {
-    Color containerColor = widget.theme.backgroundColor ?? Colors.white;
-    if (inAppMessage != null) {
-      if (inAppMessage!.backgroundColor != null) {
-        containerColor = inAppMessage!.backgroundColor!;
-      }
-    }
+    bool isBlocker = inAppMessage?.blocker ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(child: Container()),
-        Dismissible(
-          direction: DismissDirection.down,
-          key: const Key('mburger.mbmessages.bannerBottom'),
-          onDismissed: (_) => Navigator.of(context).pop(true),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 100,
-              minWidth: MediaQuery.of(context).size.width - 20,
-              maxWidth: MediaQuery.of(context).size.width - 20,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: containerColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(162, 162, 162, 0.37),
-                    blurRadius: 10,
-                  ),
-                ],
+        !isBlocker
+            ? Dismissible(
+                direction: DismissDirection.down,
+                key: const Key('mburger.mbmessages.bannerBottom'),
+                onDismissed: (_) => Navigator.of(context).pop(true),
+                child: _MBInAppMessageBannerBottomMainContentWidget(
+                  mainContext: widget.mainContext,
+                  inAppMessage: inAppMessage,
+                  theme: widget.theme,
+                  onButtonPressed: (button) => _buttonPressed(button),
+                ),
+              )
+            : _MBInAppMessageBannerBottomMainContentWidget(
+                mainContext: widget.mainContext,
+                inAppMessage: inAppMessage,
+                theme: widget.theme,
+                onButtonPressed: (button) => _buttonPressed(button),
               ),
-              child: Column(
-                children: [
-                  _MBInAppMessageBannerBottomHandleWidget(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _MBInAppMessageBannerBottomImageWidget(
-                        inAppMessage: inAppMessage,
-                      ),
-                      Flexible(
-                        child: _MBInAppMessageBannerBottomContentWidget(
-                          inAppMessage: inAppMessage,
-                          theme: widget.theme,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _MBInAppMessageBannerBottomButtonsWidget(
-                    mainContext: widget.mainContext,
-                    inAppMessage: inAppMessage,
-                    theme: widget.theme,
-                    onButtonPressed: (button) => _buttonPressed(button),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
         Container(height: MediaQuery.of(context).padding.bottom + 10),
       ],
     );
@@ -133,11 +97,87 @@ class _MBInAppMessageBannerBottomState
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
+    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    if (!isBlockerMessage) {
+      Navigator.of(widget.mainContext).pop(false);
+      await Future.delayed(Duration(milliseconds: 300));
+    }
     if (widget.onButtonPressed != null) {
       widget.onButtonPressed!(button);
     }
+  }
+}
+
+// The main content of the widget, the whole alert
+class _MBInAppMessageBannerBottomMainContentWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageBannerBottomMainContentWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Color containerColor = theme.backgroundColor ?? Colors.white;
+    if (inAppMessage != null) {
+      if (inAppMessage!.backgroundColor != null) {
+        containerColor = inAppMessage!.backgroundColor!;
+      }
+    }
+    bool isBlocker = inAppMessage?.blocker ?? false;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 100,
+        minWidth: MediaQuery.of(context).size.width - 20,
+        maxWidth: MediaQuery.of(context).size.width - 20,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: containerColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(162, 162, 162, 0.37),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            !isBlocker
+                ? _MBInAppMessageBannerBottomHandleWidget()
+                : Container(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _MBInAppMessageBannerBottomImageWidget(
+                  inAppMessage: inAppMessage,
+                ),
+                Flexible(
+                  child: _MBInAppMessageBannerBottomImageTextContentWidget(
+                    inAppMessage: inAppMessage,
+                    theme: theme,
+                  ),
+                ),
+              ],
+            ),
+            _MBInAppMessageBannerBottomButtonsWidget(
+              mainContext: mainContext,
+              inAppMessage: inAppMessage,
+              theme: theme,
+              onButtonPressed: (button) => onButtonPressed(button),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -172,11 +212,12 @@ class _MBInAppMessageBannerBottomImageWidget extends StatelessWidget {
 }
 
 /// The main textual content of the widget.
-class _MBInAppMessageBannerBottomContentWidget extends StatelessWidget {
+class _MBInAppMessageBannerBottomImageTextContentWidget
+    extends StatelessWidget {
   final MBInAppMessage? inAppMessage;
   final MBInAppMessageTheme theme;
 
-  const _MBInAppMessageBannerBottomContentWidget({
+  const _MBInAppMessageBannerBottomImageTextContentWidget({
     Key? key,
     required this.inAppMessage,
     required this.theme,

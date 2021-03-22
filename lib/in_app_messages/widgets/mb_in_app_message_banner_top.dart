@@ -46,7 +46,7 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1) {
+      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -64,65 +64,29 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
 
   @override
   Widget build(BuildContext context) {
-    Color containerColor = widget.theme.backgroundColor ?? Colors.white;
-    if (inAppMessage != null) {
-      if (inAppMessage!.backgroundColor != null) {
-        containerColor = inAppMessage!.backgroundColor!;
-      }
-    }
+    bool isBlocker = inAppMessage?.blocker ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(height: MediaQuery.of(context).padding.top + 10),
-        Dismissible(
-          direction: DismissDirection.up,
-          key: const Key('mburger.mbmessages.bannerTop'),
-          onDismissed: (_) => Navigator.of(context).pop(true),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 100,
-              minWidth: MediaQuery.of(context).size.width - 20,
-              maxWidth: MediaQuery.of(context).size.width - 20,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: containerColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(162, 162, 162, 0.37),
-                    blurRadius: 10,
-                  ),
-                ],
+        !isBlocker
+            ? Dismissible(
+                direction: DismissDirection.up,
+                key: const Key('mburger.mbmessages.bannerTop'),
+                onDismissed: (_) => Navigator.of(context).pop(true),
+                child: _MBInAppMessageBannerTopMainContentWidget(
+                  mainContext: widget.mainContext,
+                  inAppMessage: inAppMessage,
+                  theme: widget.theme,
+                  onButtonPressed: (button) => _buttonPressed(button),
+                ),
+              )
+            : _MBInAppMessageBannerTopMainContentWidget(
+                mainContext: widget.mainContext,
+                inAppMessage: inAppMessage,
+                theme: widget.theme,
+                onButtonPressed: (button) => _buttonPressed(button),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _MBInAppMessageBannerTopImageWidget(
-                        inAppMessage: inAppMessage,
-                      ),
-                      Flexible(
-                          child: _MBInAppMessageBannerTopContentWidget(
-                        inAppMessage: inAppMessage,
-                        theme: widget.theme,
-                      )),
-                    ],
-                  ),
-                  _MBInAppMessageBannerTopButtonsWidget(
-                    mainContext: widget.mainContext,
-                    inAppMessage: inAppMessage,
-                    theme: widget.theme,
-                    onButtonPressed: (button) => _buttonPressed(button),
-                  ),
-                  _MBInAppMessageBannerTopHandleWidget(),
-                ],
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -131,11 +95,84 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
+    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    if (!isBlockerMessage) {
+      Navigator.of(widget.mainContext).pop(false);
+      await Future.delayed(Duration(milliseconds: 300));
+    }
     if (widget.onButtonPressed != null) {
       widget.onButtonPressed!(button);
     }
+  }
+}
+
+class _MBInAppMessageBannerTopMainContentWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageBannerTopMainContentWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Color containerColor = theme.backgroundColor ?? Colors.white;
+    if (inAppMessage != null) {
+      if (inAppMessage!.backgroundColor != null) {
+        containerColor = inAppMessage!.backgroundColor!;
+      }
+    }
+    bool isBlocker = inAppMessage?.blocker ?? false;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 100,
+        minWidth: MediaQuery.of(context).size.width - 20,
+        maxWidth: MediaQuery.of(context).size.width - 20,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: containerColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(162, 162, 162, 0.37),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _MBInAppMessageBannerTopImageWidget(
+                  inAppMessage: inAppMessage,
+                ),
+                Flexible(
+                    child: _MBInAppMessageBannerTopContentWidget(
+                  inAppMessage: inAppMessage,
+                  theme: theme,
+                )),
+              ],
+            ),
+            _MBInAppMessageBannerTopButtonsWidget(
+              mainContext: mainContext,
+              inAppMessage: inAppMessage,
+              theme: theme,
+              onButtonPressed: (button) => onButtonPressed(button),
+            ),
+            !isBlocker ? _MBInAppMessageBannerTopHandleWidget() : Container(),
+          ],
+        ),
+      ),
+    );
   }
 }
 
