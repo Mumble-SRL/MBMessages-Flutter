@@ -70,7 +70,11 @@ class MBInAppMessageManager {
       return;
     }
 
-    _showingMessages = messages;
+    messagesToShow.sort(
+      (m1, m2) => -m1.createdAt.compareTo(m2.createdAt),
+    );
+
+    _showingMessages = messagesToShow;
     _presentMessage(
       index: 0,
       messages: messagesToShow,
@@ -299,6 +303,12 @@ class MBInAppMessageManager {
         return false;
       }
     }
+
+    // Always show a blocking in app message
+    if (message.inAppMessage?.isBlocking == true) {
+      return true;
+    }
+
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? showedMessagesString = prefs.getString(_showedMessageKey);

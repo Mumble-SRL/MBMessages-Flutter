@@ -30,6 +30,9 @@ class MBMessage {
   /// If the type of the message is push, this is the push message connected to the message.
   final MBPushMessage? pushMessage;
 
+  /// The creation date of the message.
+  final DateTime createdAt;
+
   /// The start date of the message.
   final DateTime startDate;
 
@@ -56,6 +59,7 @@ class MBMessage {
     required this.messageType,
     this.inAppMessage,
     this.pushMessage,
+    required this.createdAt,
     required this.startDate,
     required this.endDate,
     required this.automationIsOn,
@@ -85,6 +89,10 @@ class MBMessage {
       }
     }
 
+    int creationDateInt = dictionary['created_at'] ?? 0;
+    DateTime creationDate =
+        DateTime.fromMillisecondsSinceEpoch(creationDateInt * 1000);
+
     int startDateInt = dictionary['starts_at'] ?? 0;
     DateTime startDate =
         DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000);
@@ -113,6 +121,7 @@ class MBMessage {
       messageType: messageType,
       inAppMessage: inAppMessage,
       pushMessage: pushMessage,
+      createdAt: creationDate,
       startDate: startDate,
       endDate: endDate,
       automationIsOn: automationIsOn,
