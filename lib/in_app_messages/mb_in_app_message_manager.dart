@@ -132,7 +132,7 @@ class MBInAppMessageManager {
     );
 
     // For blocking messages add WillPopScope widget to disable Android back button
-    if (inAppMessage.blocker) {
+    if (inAppMessage.isBlocking) {
       widget = WillPopScope(
         child: widget,
         onWillPop: () async => false,
@@ -144,7 +144,7 @@ class MBInAppMessageManager {
 
     dynamic? result = await showGeneralDialog(
       context: context,
-      barrierDismissible: !inAppMessage.blocker ? true : false,
+      barrierDismissible: !inAppMessage.isBlocking ? true : false,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 300),

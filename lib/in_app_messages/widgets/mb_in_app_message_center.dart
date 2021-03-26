@@ -47,7 +47,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
+      if (inAppMessage.duration != -1 && !inAppMessage.isBlocking) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -71,7 +71,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
         containerColor = inAppMessage!.backgroundColor!;
       }
     }
-    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -116,7 +116,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
                   ],
                 ),
               ),
-              !isBlockerMessage
+              !isBlockingMessage
                   ? _MBInAppMessageCenterCloseWidget(
                       theme: widget.theme,
                       onTap: () => _closePressed(),
@@ -136,8 +136,8 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    bool isBlockerMessage = inAppMessage?.blocker ?? false;
-    if (!isBlockerMessage) {
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
+    if (!isBlockingMessage) {
       Navigator.of(widget.mainContext).pop(false);
       await Future.delayed(Duration(milliseconds: 300));
     }

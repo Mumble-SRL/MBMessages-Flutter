@@ -54,7 +54,7 @@ class _MBInAppMessageFullscreenImageState
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
+      if (inAppMessage.duration != -1 && !inAppMessage.isBlocking) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -78,7 +78,7 @@ class _MBInAppMessageFullscreenImageState
         containerColor = inAppMessage!.backgroundColor!;
       }
     }
-    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -107,7 +107,7 @@ class _MBInAppMessageFullscreenImageState
                 theme: widget.theme,
                 onButtonPressed: (button) => _buttonPressed(button),
               ),
-              !isBlockerMessage
+              !isBlockingMessage
                   ? _MBInAppMessageFullscreenImageCloseWidget(
                       theme: widget.theme,
                       onTap: () => _closePressed(),
@@ -124,7 +124,7 @@ class _MBInAppMessageFullscreenImageState
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    bool isBlockerMessage = inAppMessage?.blocker ?? false;
+    bool isBlockerMessage = inAppMessage?.isBlocking ?? false;
     if (!isBlockerMessage) {
       Navigator.of(widget.mainContext).pop(false);
       await Future.delayed(Duration(milliseconds: 300));

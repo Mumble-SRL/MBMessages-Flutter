@@ -47,7 +47,7 @@ class _MBInAppMessageBannerBottomState
   void initState() {
     MBInAppMessage? inAppMessage = this.inAppMessage;
     if (inAppMessage != null) {
-      if (inAppMessage.duration != -1 && !inAppMessage.blocker) {
+      if (inAppMessage.duration != -1 && !inAppMessage.isBlocking) {
         timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
           timer?.cancel();
           Navigator.of(widget.mainContext).pop(true);
@@ -65,12 +65,12 @@ class _MBInAppMessageBannerBottomState
 
   @override
   Widget build(BuildContext context) {
-    bool isBlocker = inAppMessage?.blocker ?? false;
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(child: Container()),
-        !isBlocker
+        !isBlockingMessage
             ? Dismissible(
                 direction: DismissDirection.down,
                 key: const Key('mburger.mbmessages.bannerBottom'),
@@ -97,8 +97,8 @@ class _MBInAppMessageBannerBottomState
   /// The widget is dismissed and `onButtonPressed` is called.
   _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
-    bool isBlockerMessage = inAppMessage?.blocker ?? false;
-    if (!isBlockerMessage) {
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
+    if (!isBlockingMessage) {
       Navigator.of(widget.mainContext).pop(false);
       await Future.delayed(Duration(milliseconds: 300));
     }
@@ -131,7 +131,7 @@ class _MBInAppMessageBannerBottomMainContentWidget extends StatelessWidget {
         containerColor = inAppMessage!.backgroundColor!;
       }
     }
-    bool isBlocker = inAppMessage?.blocker ?? false;
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return ConstrainedBox(
       constraints: BoxConstraints(
         minHeight: 100,
@@ -151,7 +151,7 @@ class _MBInAppMessageBannerBottomMainContentWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            !isBlocker
+            !isBlockingMessage
                 ? _MBInAppMessageBannerBottomHandleWidget()
                 : Container(),
             Row(
