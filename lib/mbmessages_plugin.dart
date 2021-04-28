@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 /// Messages plugin to interact with native app.
 class MBMessagesPlugin {
   /// Function that needs to be called when the app enters foreground.
-  static VoidCallback onAppEnterForeground;
+  static VoidCallback? onAppEnterForeground;
 
   /// The method channel to interact with native code.
   static const MethodChannel _channel = const MethodChannel('mbmessages');
@@ -17,7 +17,7 @@ class MBMessagesPlugin {
   /// Initialize the callbacks from the native side to dart.
   /// @param onAppEnterForeground Function that needs to be called when the app enters foreground.
   static Future<void> initializeMethodCall({
-    @required VoidCallback onAppEnterForeground,
+    required VoidCallback? onAppEnterForeground,
   }) async {
     if (!_methodCallInitialized) {
       _methodCallInitialized = true;
@@ -32,7 +32,7 @@ class MBMessagesPlugin {
     switch (methodCall.method) {
       case 'applicationWillEnterForeground':
         if (MBMessagesPlugin.onAppEnterForeground != null) {
-          MBMessagesPlugin.onAppEnterForeground();
+          MBMessagesPlugin.onAppEnterForeground!();
         }
         break;
       default:

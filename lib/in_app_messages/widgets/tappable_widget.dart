@@ -7,12 +7,12 @@ class TappableWidget extends StatefulWidget {
   final Widget child;
 
   /// Callback called when the widget is tapped.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const TappableWidget({
-    Key key,
-    @required this.onTap,
-    @required this.child,
+    Key? key,
+    required this.onTap,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -28,8 +28,8 @@ class _TappableWidgetState extends State<TappableWidget>
   static const Duration kFadeInDuration = Duration(milliseconds: 100);
   final Tween<double> _opacityTween = Tween<double>(begin: 1.0);
 
-  AnimationController _animationController;
-  Animation<double> _opacityAnimation;
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
 
   bool _buttonHeldDown = false;
 
@@ -60,7 +60,6 @@ class _TappableWidgetState extends State<TappableWidget>
   @override
   void dispose() {
     _animationController.dispose();
-    _animationController = null;
     super.dispose();
   }
 

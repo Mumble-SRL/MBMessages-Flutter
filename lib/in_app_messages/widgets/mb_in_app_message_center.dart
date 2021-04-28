@@ -18,18 +18,18 @@ class MBInAppMessageCenter extends StatefulWidget {
   final MBMessage message;
 
   /// Function called when the button is pressed.
-  final Function(MBInAppMessageButton) onButtonPressed;
+  final Function(MBInAppMessageButton)? onButtonPressed;
 
   /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
   /// Initializes a `MBInAppMessageCenter` with the parameters passed
   const MBInAppMessageCenter({
-    Key key,
-    @required this.mainContext,
-    @required this.message,
-    @required this.onButtonPressed,
-    @required this.theme,
+    Key? key,
+    required this.mainContext,
+    required this.message,
+    required this.onButtonPressed,
+    required this.theme,
   });
 
   @override
@@ -38,34 +38,40 @@ class MBInAppMessageCenter extends StatefulWidget {
 
 class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   /// Returns the in-app message of this message
-  MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+  MBInAppMessage? get inAppMessage => widget.message.inAppMessage;
 
   /// Timer used to dismiss the message after the defined duration is passed.
-  Timer timer;
+  Timer? timer;
 
   @override
   void initState() {
-    timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-      timer.cancel();
-      Navigator.of(widget.mainContext).pop(true);
-    });
+    MBInAppMessage? inAppMessage = this.inAppMessage;
+    if (inAppMessage != null) {
+      if (inAppMessage.duration != -1 && !inAppMessage.isBlocking) {
+        timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
+          timer?.cancel();
+          Navigator.of(widget.mainContext).pop(true);
+        });
+      }
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Color containerColor = Colors.white;
-    if (inAppMessage.backgroundColor != null) {
-      containerColor = inAppMessage.backgroundColor;
-    } else {
-      containerColor = widget.theme.backgroundColor;
+    Color containerColor = widget.theme.backgroundColor ?? Colors.white;
+    if (inAppMessage != null) {
+      if (inAppMessage!.backgroundColor != null) {
+        containerColor = inAppMessage!.backgroundColor!;
+      }
     }
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -87,8 +93,38 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
           child: Stack(
             fit: StackFit.loose,
             children: [
-              _column(),
-              _closeButton(),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _MBInAppMessageCenterImageWidget(
+                      inAppMessage: inAppMessage,
+                    ),
+                    Flexible(
+                      child: _MBInAppMessageCenterContentWidget(
+                        inAppMessage: inAppMessage,
+                        theme: widget.theme,
+                      ),
+                    ),
+                    _MBInAppMessageCenterButtonsWidget(
+                      mainContext: widget.mainContext,
+                      inAppMessage: inAppMessage,
+                      theme: widget.theme,
+                      onButtonPressed: (button) => _buttonPressed(button),
+                    ),
+                  ],
+                ),
+              ),
+              !isBlockingMessage
+                  ? _MBInAppMessageCenterCloseWidget(
+                      theme: widget.theme,
+                      onTap: () => _closePressed(),
+                    )
+                  : Container(
+                      width: 0,
+                      height: 0,
+                    ),
             ],
           ),
         ),
@@ -96,53 +132,87 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
     );
   }
 
-  /// The main column of contents.
-  Widget _column() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _image(),
-          Flexible(child: _content()),
-          _buttons(),
-        ],
-      ),
-    );
+  /// Function called when a button is pressed.
+  /// The widget is dismissed and `onButtonPressed` is called.
+  _buttonPressed(MBInAppMessageButton button) async {
+    timer?.cancel();
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
+    if (!isBlockingMessage) {
+      Navigator.of(widget.mainContext).pop(false);
+      await Future.delayed(Duration(milliseconds: 300));
+    }
+    if (widget.onButtonPressed != null) {
+      widget.onButtonPressed!(button);
+    }
   }
 
-  /// The image for the widget.
-  Widget _image() {
-    if (inAppMessage.image != null && inAppMessage.image != '') {
-      const double imageHeight = 175.0;
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Container(
-          height: imageHeight,
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width - 10 * 2,
+  /// Function called when close is pressed.
+  _closePressed() async {
+    timer?.cancel();
+    Navigator.of(widget.mainContext).pop(true);
+    await Future.delayed(Duration(milliseconds: 300));
+  }
+}
+
+/// The image for the widget.
+class _MBInAppMessageCenterImageWidget extends StatelessWidget {
+  final MBInAppMessage? inAppMessage;
+
+  const _MBInAppMessageCenterImageWidget({
+    Key? key,
+    required this.inAppMessage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (inAppMessage != null) {
+      if (inAppMessage!.image != null && inAppMessage!.image != '') {
+        const double imageHeight = 175.0;
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            height: imageHeight,
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - 10 * 2,
+            ),
+            child: Image.network(
+              inAppMessage!.image!,
+              fit: BoxFit.contain,
+            ),
           ),
-          child: Image.network(
-            inAppMessage.image,
-            fit: BoxFit.contain,
-          ),
-        ),
-      );
+        );
+      }
     }
     return Container();
   }
+}
 
-  /// The main textual content of the widget.
-  Widget _content() {
+/// The main textual content of the widget.
+class _MBInAppMessageCenterContentWidget extends StatelessWidget {
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+
+  const _MBInAppMessageCenterContentWidget({
+    Key? key,
+    required this.inAppMessage,
+    required this.theme,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.inAppMessage == null) {
+      return Container();
+    }
+    MBInAppMessage inAppMessage = this.inAppMessage!;
     bool hasTitle = inAppMessage.title != null && inAppMessage.title != '';
     bool hasBody = inAppMessage.body != null && inAppMessage.body != '';
-    TextStyle titleStyle = widget.theme.titleStyle;
+    TextStyle? titleStyle = theme.titleStyle;
     if (inAppMessage.titleColor != null) {
-      titleStyle = titleStyle.copyWith(color: inAppMessage.titleColor);
+      titleStyle = titleStyle?.copyWith(color: inAppMessage.titleColor);
     }
-    TextStyle bodyStyle = widget.theme.bodyStyle;
+    TextStyle? bodyStyle = theme.bodyStyle;
     if (inAppMessage.bodyColor != null) {
-      bodyStyle = bodyStyle.copyWith(color: inAppMessage.bodyColor);
+      bodyStyle = bodyStyle?.copyWith(color: inAppMessage.bodyColor);
     }
     return Padding(
       padding: EdgeInsets.only(
@@ -156,14 +226,14 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
         children: [
           hasTitle
               ? Text(
-                  inAppMessage.title,
+                  inAppMessage.title ?? '',
                   style: titleStyle,
                 )
               : Container(),
           Container(height: hasTitle && hasBody ? 20 : 0),
           hasBody
               ? Text(
-                  inAppMessage.body,
+                  inAppMessage.body ?? '',
                   style: bodyStyle,
                 )
               : Container(),
@@ -171,15 +241,41 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
       ),
     );
   }
+}
 
-  /// The buttons of the widget.
-  Widget _buttons() {
-    bool hasButtons = inAppMessage.buttons?.length != 0;
+/// The buttons of the widget.
+class _MBInAppMessageCenterButtonsWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageCenterButtonsWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.inAppMessage == null) {
+      return Container();
+    }
+    MBInAppMessage inAppMessage = this.inAppMessage!;
+    if (inAppMessage.buttons == null) {
+      return Container();
+    }
+
+    List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
+
+    bool hasButtons = buttons.length != 0;
     if (!hasButtons) {
       return Container();
     }
     const double buttonHeight = 44;
-    bool has2Buttons = inAppMessage.buttons.length == 2;
+    bool has2Buttons = buttons.length == 2;
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
@@ -189,11 +285,11 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
           children: [
             Expanded(
               child: MBInAppMessageButtonWidget(
-                mainContext: widget.mainContext,
-                button: inAppMessage.buttons[0],
+                mainContext: mainContext,
+                button: buttons[0],
                 height: buttonHeight,
-                onTap: () => _buttonPressed(inAppMessage.buttons[0]),
-                theme: widget.theme,
+                onTap: () => onButtonPressed(buttons[0]),
+                theme: theme,
                 isButton1: true,
               ),
             ),
@@ -201,11 +297,11 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
             has2Buttons
                 ? Expanded(
                     child: MBInAppMessageButtonWidget(
-                      mainContext: widget.mainContext,
-                      button: inAppMessage.buttons[1],
+                      mainContext: mainContext,
+                      button: buttons[1],
                       height: buttonHeight,
-                      onTap: () => _buttonPressed(inAppMessage.buttons[1]),
-                      theme: widget.theme,
+                      onTap: () => onButtonPressed(buttons[1]),
+                      theme: theme,
                       isButton1: false,
                     ),
                   )
@@ -215,20 +311,21 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
       ),
     );
   }
+}
 
-  /// Function called when a button is pressed.
-  /// The widget is dismissed and `onButtonPressed` is called.
-  _buttonPressed(MBInAppMessageButton button) async {
-    timer.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
-    if (widget.onButtonPressed != null) {
-      widget.onButtonPressed(button);
-    }
-  }
+/// The close button for this widget.
+class _MBInAppMessageCenterCloseWidget extends StatelessWidget {
+  final MBInAppMessageTheme theme;
+  final VoidCallback onTap;
 
-  /// The close button for this widget.
-  Widget _closeButton() {
+  const _MBInAppMessageCenterCloseWidget({
+    Key? key,
+    required this.theme,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned.fill(
       child: Align(
         alignment: Alignment.topRight,
@@ -239,26 +336,19 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: widget.theme.closeButtonBackgroundColor,
+                color: theme.closeButtonBackgroundColor,
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
               child: Icon(
                 Icons.close,
-                color: widget.theme.closeButtonColor,
+                color: theme.closeButtonColor,
                 size: 20,
               ),
             ),
-            onTap: () => _closePressed(),
+            onTap: () => onTap(),
           ),
         ),
       ),
     );
-  }
-
-  /// Function called when close is pressed.
-  _closePressed() async {
-    timer.cancel();
-    Navigator.of(widget.mainContext).pop(true);
-    await Future.delayed(Duration(milliseconds: 300));
   }
 }

@@ -24,23 +24,23 @@ class MBInAppMessageButtonWidget extends StatelessWidget {
   final MBInAppMessageTheme theme;
 
   const MBInAppMessageButtonWidget({
-    Key key,
-    @required this.mainContext,
-    @required this.button,
-    @required this.height,
-    @required this.isButton1,
-    @required this.onTap,
-    @required this.theme,
+    Key? key,
+    required this.mainContext,
+    required this.button,
+    required this.height,
+    required this.isButton1,
+    required this.onTap,
+    required this.theme,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle =
+    TextStyle? textStyle =
         isButton1 ? theme.button1TextStyle : theme.button2TextStyle;
     if (button.titleColor != null) {
-      textStyle = textStyle.copyWith(color: button.titleColor);
+      textStyle = textStyle?.copyWith(color: button.titleColor);
     }
-    Color backgroundColor;
+    Color? backgroundColor;
     if (button.backgroundColor != null) {
       backgroundColor = button.backgroundColor;
     } else {
@@ -50,7 +50,9 @@ class MBInAppMessageButtonWidget extends StatelessWidget {
     }
     Color borderColor = Colors.transparent;
     if (!isButton1) {
-      borderColor = theme.button2BorderColor;
+      if (theme.button2BorderColor != null) {
+        borderColor = theme.button2BorderColor!;
+      }
     }
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(height / 2)),

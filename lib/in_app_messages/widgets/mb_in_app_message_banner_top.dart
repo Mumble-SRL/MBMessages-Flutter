@@ -16,18 +16,18 @@ class MBInAppMessageBannerTop extends StatefulWidget {
   final MBMessage message;
 
   /// Function called when the button is pressed.
-  final Function(MBInAppMessageButton) onButtonPressed;
+  final Function(MBInAppMessageButton)? onButtonPressed;
 
   /// The theme to use for this message.
   final MBInAppMessageTheme theme;
 
   /// Initializes a `MBInAppMessageBannerTop` with the parameters passed
   const MBInAppMessageBannerTop({
-    Key key,
-    @required this.mainContext,
-    @required this.message,
-    @required this.onButtonPressed,
-    @required this.theme,
+    Key? key,
+    required this.mainContext,
+    required this.message,
+    required this.onButtonPressed,
+    required this.theme,
   });
 
   @override
@@ -37,109 +37,204 @@ class MBInAppMessageBannerTop extends StatefulWidget {
 
 class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
   /// Returns the in-app message of this message
-  MBInAppMessage get inAppMessage => widget.message.inAppMessage;
+  MBInAppMessage? get inAppMessage => widget.message.inAppMessage;
 
   /// Timer used to dismiss the message after the defined duration is passed.
-  Timer timer;
+  Timer? timer;
 
   @override
   void initState() {
-    timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
-      timer.cancel();
-      Navigator.of(widget.mainContext).pop(true);
-    });
+    MBInAppMessage? inAppMessage = this.inAppMessage;
+    if (inAppMessage != null) {
+      if (inAppMessage.duration != -1 && !inAppMessage.isBlocking) {
+        timer = Timer(Duration(seconds: inAppMessage.duration.toInt()), () {
+          timer?.cancel();
+          Navigator.of(widget.mainContext).pop(true);
+        });
+      }
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Color containerColor = Colors.white;
-    if (inAppMessage.backgroundColor != null) {
-      containerColor = inAppMessage.backgroundColor;
-    } else {
-      containerColor = widget.theme.backgroundColor;
-    }
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(height: MediaQuery.of(context).padding.top + 10),
-        Dismissible(
-          direction: DismissDirection.up,
-          key: const Key('mburger.mbmessages.bannerTop'),
-          onDismissed: (_) => Navigator.of(context).pop(true),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 100,
-              minWidth: MediaQuery.of(context).size.width - 20,
-              maxWidth: MediaQuery.of(context).size.width - 20,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: containerColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(162, 162, 162, 0.37),
-                    blurRadius: 10,
-                  ),
-                ],
+        !isBlockingMessage
+            ? Dismissible(
+                direction: DismissDirection.up,
+                key: const Key('mburger.mbmessages.bannerTop'),
+                onDismissed: (_) => Navigator.of(context).pop(true),
+                child: _MBInAppMessageBannerTopMainContentWidget(
+                  mainContext: widget.mainContext,
+                  inAppMessage: inAppMessage,
+                  theme: widget.theme,
+                  onButtonPressed: (button) => _buttonPressed(button),
+                ),
+              )
+            : _MBInAppMessageBannerTopMainContentWidget(
+                mainContext: widget.mainContext,
+                inAppMessage: inAppMessage,
+                theme: widget.theme,
+                onButtonPressed: (button) => _buttonPressed(button),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _image(),
-                      Flexible(child: _content()),
-                    ],
-                  ),
-                  _buttons(),
-                  _handle(),
-                ],
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  /// The image for the widget.
-  Widget _image() {
-    if (inAppMessage.image != null && inAppMessage.image != '') {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Container(
-          width: 80,
-          height: 80,
-          child: Image.network(
-            inAppMessage.image,
-            fit: BoxFit.cover,
-          ),
+  /// Function called when a button is pressed.
+  /// The widget is dismissed and `onButtonPressed` is called.
+  _buttonPressed(MBInAppMessageButton button) async {
+    timer?.cancel();
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
+    if (!isBlockingMessage) {
+      Navigator.of(widget.mainContext).pop(false);
+      await Future.delayed(Duration(milliseconds: 300));
+    }
+    if (widget.onButtonPressed != null) {
+      widget.onButtonPressed!(button);
+    }
+  }
+}
+
+class _MBInAppMessageBannerTopMainContentWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageBannerTopMainContentWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Color containerColor = theme.backgroundColor ?? Colors.white;
+    if (inAppMessage != null) {
+      if (inAppMessage!.backgroundColor != null) {
+        containerColor = inAppMessage!.backgroundColor!;
+      }
+    }
+    bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 100,
+        minWidth: MediaQuery.of(context).size.width - 20,
+        maxWidth: MediaQuery.of(context).size.width - 20,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: containerColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(162, 162, 162, 0.37),
+              blurRadius: 10,
+            ),
+          ],
         ),
-      );
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _MBInAppMessageBannerTopImageWidget(
+                  inAppMessage: inAppMessage,
+                ),
+                Flexible(
+                    child: _MBInAppMessageBannerTopContentWidget(
+                  inAppMessage: inAppMessage,
+                  theme: theme,
+                )),
+              ],
+            ),
+            _MBInAppMessageBannerTopButtonsWidget(
+              mainContext: mainContext,
+              inAppMessage: inAppMessage,
+              theme: theme,
+              onButtonPressed: (button) => onButtonPressed(button),
+            ),
+            !isBlockingMessage ? _MBInAppMessageBannerTopHandleWidget() : Container(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The image for the widget
+class _MBInAppMessageBannerTopImageWidget extends StatelessWidget {
+  final MBInAppMessage? inAppMessage;
+
+  const _MBInAppMessageBannerTopImageWidget({
+    Key? key,
+    required this.inAppMessage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (inAppMessage != null) {
+      if (inAppMessage!.image != null && inAppMessage!.image != '') {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            width: 80,
+            height: 80,
+            child: Image.network(
+              inAppMessage!.image!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      }
     }
     return Container();
   }
+}
 
-  /// The main textual content of the widget.
-  Widget _content() {
+/// The main textual content of the widget.
+class _MBInAppMessageBannerTopContentWidget extends StatelessWidget {
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+
+  const _MBInAppMessageBannerTopContentWidget({
+    Key? key,
+    required this.inAppMessage,
+    required this.theme,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.inAppMessage == null) {
+      return Container();
+    }
+    MBInAppMessage inAppMessage = this.inAppMessage!;
     bool hasImage = inAppMessage.image != null && inAppMessage.image != '';
     bool hasTitle = inAppMessage.title != null && inAppMessage.title != '';
     bool hasBody = inAppMessage.body != null && inAppMessage.body != '';
-    TextStyle titleStyle = widget.theme.titleStyle;
+    TextStyle? titleStyle =
+        theme.titleStyle ?? Theme.of(context).textTheme.headline2;
     if (inAppMessage.titleColor != null) {
-      titleStyle = titleStyle.copyWith(color: inAppMessage.titleColor);
+      titleStyle = titleStyle?.copyWith(color: inAppMessage.titleColor);
     }
-    TextStyle bodyStyle = widget.theme.bodyStyle;
+    TextStyle? bodyStyle =
+        theme.bodyStyle ?? Theme.of(context).textTheme.bodyText2;
     if (inAppMessage.bodyColor != null) {
-      bodyStyle = bodyStyle.copyWith(color: inAppMessage.bodyColor);
+      bodyStyle = bodyStyle?.copyWith(color: inAppMessage.bodyColor);
     }
     return Padding(
       padding: EdgeInsets.only(
@@ -155,14 +250,14 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
         children: [
           hasTitle
               ? Text(
-                  inAppMessage.title,
+                  inAppMessage.title ?? '',
                   style: titleStyle,
                 )
               : Container(),
           Container(height: hasTitle && hasBody ? 10 : 0),
           hasBody
               ? Text(
-                  inAppMessage.body,
+                  inAppMessage.body ?? '',
                   style: bodyStyle,
                 )
               : Container(),
@@ -170,15 +265,41 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
       ),
     );
   }
+}
 
-  /// The buttons of the widget.
-  Widget _buttons() {
-    bool hasButtons = inAppMessage.buttons?.length != 0;
+/// The buttons of the widget.
+class _MBInAppMessageBannerTopButtonsWidget extends StatelessWidget {
+  final BuildContext mainContext;
+  final MBInAppMessage? inAppMessage;
+  final MBInAppMessageTheme theme;
+  final Function(MBInAppMessageButton) onButtonPressed;
+
+  const _MBInAppMessageBannerTopButtonsWidget({
+    Key? key,
+    required this.mainContext,
+    required this.inAppMessage,
+    required this.theme,
+    required this.onButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.inAppMessage == null) {
+      return Container();
+    }
+    MBInAppMessage inAppMessage = this.inAppMessage!;
+    if (inAppMessage.buttons == null) {
+      return Container();
+    }
+
+    List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
+
+    bool hasButtons = buttons.length != 0;
     if (!hasButtons) {
       return Container();
     }
     const double buttonHeight = 30;
-    bool has2Buttons = inAppMessage.buttons.length == 2;
+    bool has2Buttons = buttons.length == 2;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
       child: Container(
@@ -188,11 +309,11 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
           children: [
             Expanded(
               child: MBInAppMessageButtonWidget(
-                mainContext: widget.mainContext,
-                button: inAppMessage.buttons[0],
+                mainContext: mainContext,
+                button: buttons[0],
                 height: buttonHeight,
-                onTap: () => _buttonPressed(inAppMessage.buttons[0]),
-                theme: widget.theme,
+                onTap: () => onButtonPressed(buttons[0]),
+                theme: theme,
                 isButton1: true,
               ),
             ),
@@ -200,11 +321,11 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
             has2Buttons
                 ? Expanded(
                     child: MBInAppMessageButtonWidget(
-                      mainContext: widget.mainContext,
-                      button: inAppMessage.buttons[1],
+                      mainContext: mainContext,
+                      button: buttons[1],
                       height: buttonHeight,
-                      onTap: () => _buttonPressed(inAppMessage.buttons[1]),
-                      theme: widget.theme,
+                      onTap: () => onButtonPressed(buttons[1]),
+                      theme: theme,
                       isButton1: false,
                     ),
                   )
@@ -214,9 +335,12 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
       ),
     );
   }
+}
 
-  /// The handle positioned at the top to indicate that the user can dismiss interactively this widget.
-  Widget _handle() {
+/// The handle positioned at the top to indicate that the user can dismiss interactively this widget.
+class _MBInAppMessageBannerTopHandleWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Center(
@@ -230,16 +354,5 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
         ),
       ),
     );
-  }
-
-  /// Function called when a button is pressed.
-  /// The widget is dismissed and `onButtonPressed` is called.
-  _buttonPressed(MBInAppMessageButton button) async {
-    timer.cancel();
-    Navigator.of(widget.mainContext).pop(false);
-    await Future.delayed(Duration(milliseconds: 300));
-    if (widget.onButtonPressed != null) {
-      widget.onButtonPressed(button);
-    }
   }
 }

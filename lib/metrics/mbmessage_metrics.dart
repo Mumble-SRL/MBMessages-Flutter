@@ -19,7 +19,8 @@ enum MBMessageMetricsMetric {
 class MBMessageMetrics {
   /// Checks the launch notification and sends analytics data to MBurger if a notification has launched the app.
   static Future<void> checkLaunchNotification() async {
-    Map<String, dynamic> launchNotification = await MBPush.launchNotification();
+    Map<String, dynamic>? launchNotification =
+        await MBPush.launchNotification();
     if (launchNotification != null) {
       notificationTapped(launchNotification);
     }
@@ -27,11 +28,9 @@ class MBMessageMetrics {
 
   /// Called when a notification arrives sends the `MBMessageMetricsMetric.view` metric.
   static Future<void> notificationArrived(
-      Map<String, dynamic> notification) async {
-    if (notification == null) {
-      return;
-    }
-    int messageId = notification['message_id'];
+    Map<String, dynamic> notification,
+  ) async {
+    int? messageId = notification['message_id'];
     if (messageId == null) {
       return;
     }
@@ -44,11 +43,9 @@ class MBMessageMetrics {
   /// Called when a notification is tapped, it sends the `MBMessageMetricsMetric.interaction` metric.
   /// If the `MBMessageMetricsMetric.view` metric has not been sent yet it sends also this metric.
   static Future<void> notificationTapped(
-      Map<String, dynamic> notification) async {
-    if (notification == null) {
-      return;
-    }
-    int messageId = notification['message_id'];
+    Map<String, dynamic> notification,
+  ) async {
+    int? messageId = notification['message_id'];
     if (messageId == null) {
       return;
     }
@@ -154,7 +151,7 @@ class MBMessageMetrics {
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> metricsStrings =
-        prefs.getStringList(_notificationMetricsKey());
+        prefs.getStringList(_notificationMetricsKey()) ?? [];
     return metricsStrings.contains(_metricString(metric, messageId));
   }
 
@@ -166,8 +163,9 @@ class MBMessageMetrics {
     int messageId,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> metricsStrings = prefs
-        .getStringList('com.mumble.mburger.messages.pushNotificationViewed');
+    List<String> metricsStrings = prefs.getStringList(
+            'com.mumble.mburger.messages.pushNotificationViewed') ??
+        [];
     String metricString = _metricString(metric, messageId);
     if (!metricsStrings.contains(metricString)) {
       metricsStrings.add(metricString);

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:mpush/mp_android_notifications_settings.dart';
 import 'package:mpush/mp_topic.dart';
 import 'package:mpush/mpush.dart';
@@ -19,29 +18,29 @@ class MBPush {
   }
 
   /// Returns the callback called when a token is retrieved from APNS or FCM
-  static Function(String) get onToken => MPush.onToken;
+  static Function(String)? get onToken => MPush.onToken;
 
   /// Sets called when a token is retrieved from APNS or FCM
-  static set onToken(Function(String) onToken) {
+  static set onToken(Function(String)? onToken) {
     MPush.onToken = onToken;
   }
 
   /// The notification that launched the app, if present, otherwise `null`.
-  static Future<Map<String, dynamic>> launchNotification() =>
+  static Future<Map<String, dynamic>?> launchNotification() =>
       MPush.launchNotification();
 
-  static MPAndroidNotificationsSettings _androidPushNotificationsSettings;
+  static MPAndroidNotificationsSettings? _androidPushNotificationsSettings;
 
   /// Returns the settings used to show notifications on android: the channel id, name, description and the icon.
-  static MPAndroidNotificationsSettings get androidPushNotificationsSettings =>
+  static MPAndroidNotificationsSettings? get androidPushNotificationsSettings =>
       _androidPushNotificationsSettings;
 
   /// Returns the callback called when a push notification arrives.
-  static Function(Map<String, dynamic>) get onNotificationArrival =>
+  static Function(Map<String, dynamic>)? get onNotificationArrival =>
       MPush.onNotificationArrival;
 
   /// Returns the callback called when a push notification is tapped.
-  static Function(Map<String, dynamic>) get onNotificationTap =>
+  static Function(Map<String, dynamic>)? get onNotificationTap =>
       MPush.onNotificationTap;
 
   /// Configures the MPush plugin with the callbacks.
@@ -49,9 +48,9 @@ class MBPush {
   /// @param onNotificationTap Called when a push notification is tapped.
   /// @param androidNotificationsSettings Settings for the android notification.
   static Future<void> configure({
-    @required Function(Map<String, dynamic>) onNotificationArrival,
-    @required Function(Map<String, dynamic>) onNotificationTap,
-    @required MPAndroidNotificationsSettings androidNotificationsSettings,
+    required Function(Map<String, dynamic>) onNotificationArrival,
+    required Function(Map<String, dynamic>) onNotificationTap,
+    required MPAndroidNotificationsSettings androidNotificationsSettings,
   }) {
     _androidPushNotificationsSettings = androidNotificationsSettings;
     return MPush.configure(
