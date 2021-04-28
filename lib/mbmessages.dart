@@ -20,9 +20,10 @@ import 'in_app_messages/mb_in_app_message.dart';
 import 'push_notifications/mbpush.dart';
 
 export 'mb_messages_builder.dart';
-export 'push_notifications/mbpush.dart';
 export 'in_app_messages/widgets/mb_in_app_message_theme.dart';
 export 'in_app_messages/mb_in_app_message_button.dart';
+export 'package:mpush/mp_android_notifications_settings.dart';
+export 'package:mpush/mp_topic.dart';
 
 /// This is the main entry point to manage all the messages features of MBurger.
 /// To use create an instance of MBMessages and add it to the MBManager plugins.

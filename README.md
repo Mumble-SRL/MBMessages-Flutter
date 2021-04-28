@@ -132,13 +132,13 @@ With this plugin you can also manage the push notification section of MBurger, t
 Set the push token like this:
 
 ```dart
-MBPush.pushToken = "YOUR_PUSH_TOKEN";
+MBMessages.pushToken = "YOUR_PUSH_TOKEN";
 ```
 
 Configure the callbacks and Android native interface like this:
 
 ```dart
-MBPush.configure(
+MBMessages.configurePush(
   onNotificationArrival: (notification) {
     print("Notification arrived: $notification");
   },
@@ -168,7 +168,7 @@ To request a notification token you need to do the following things:
 1. Set a callback that will be called once the token is received correctly from APNS/FCM 
 
 ``` dart
-MBPush.onToken = (token) {
+MBMessages.onToken = (token) {
     print("Token retrieved: $token");
 }
 ```
@@ -176,7 +176,7 @@ MBPush.onToken = (token) {
 2. Request the token using MPush:
 
 ``` dart
-MBPush.requestToken();
+MBMessages.requestToken();
 ```
 
 ## Register to topics
@@ -186,10 +186,10 @@ Once you have a notification token you can register this device to push notifica
 ``` dart
 MBPush.onToken = (token) async {
   print("Token received $token");
-  await MBPush.registerDevice(token).catchError(
+  await MBMessages.registerDevice(token).catchError(
     (error) => print(error),
   );
-  await MBPush.registerToTopic(MPTopic(code: 'Topic')).catchError(
+  await MBMessages.registerToTopic(MPTopic(code: 'Topic')).catchError(
     (error) => print(error),
   );
   print('Registered');
@@ -210,7 +210,7 @@ MBurger has 2 default topics that you should use in order to guarantee the corre
 * `MBMessages.devicePushTopic()`: this topic represents the current device
 
 ```dart
-await MBPush.registerToTopics(
+await MBMessages.registerToTopics(
   [
     await MBMessages.projectPushTopic(),
     await MBMessages.devicePushTopic(),
@@ -224,7 +224,7 @@ await MBPush.registerToTopics(
 If the application was launched from a notification you can retrieve the data of the notification like this, this will be `null` if the application was launched normally:
 
 ``` dart
-Map<String, dynamic> launchNotification = await MBPush.launchNotification();
+Map<String, dynamic> launchNotification = await MBMessages.launchNotification();
 print(launchNotification);
 ```
 
