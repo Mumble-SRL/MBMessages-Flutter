@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mbmessages/push_notifications/mbpush.dart';
@@ -30,7 +31,7 @@ class MBMessageMetrics {
   static Future<void> notificationArrived(
     Map<String, dynamic> notification,
   ) async {
-    int? messageId = notification['message_id'];
+    int? messageId = _messageIdForNotification(notification);
     if (messageId == null) {
       return;
     }
@@ -45,7 +46,7 @@ class MBMessageMetrics {
   static Future<void> notificationTapped(
     Map<String, dynamic> notification,
   ) async {
-    int? messageId = notification['message_id'];
+    int? messageId = _messageIdForNotification(notification);
     if (messageId == null) {
       return;
     }
@@ -83,6 +84,43 @@ class MBMessageMetrics {
     }
     await _setPushNotificationMetricSent(metric, messageId);
     return _createMessageMetric(metric, messageId);
+  }
+
+  ///Extracts the message id from the notification payload
+  static int? _messageIdForNotification(Map<String, dynamic> notification) {
+    int? messageId;
+    if (Platform.isAndroid) {
+      if (notification['custom'] != null) {
+        Map<String, dynamic>? customNotificationData;
+        if (notification['custom'] is Map) {
+          customNotificationData = notification['custom'];
+        } else if (notification['custom'] is String) {
+          String jsonString = notification['custom'];
+          try {
+            dynamic jsonObject = json.decode(jsonString);
+            if (jsonObject is Map<String, dynamic>) {
+              customNotificationData = jsonObject;
+            }
+          } catch (e) {
+            print(e);
+          }
+        }
+        if (customNotificationData != null) {
+          if (customNotificationData['message_id'] is int) {
+            messageId = customNotificationData['message_id'];
+          } else if (customNotificationData['message_id'] is String) {
+            messageId = int.tryParse(customNotificationData['message_id']);
+          }
+        }
+      }
+    } else {
+      if (notification['message_id'] is int) {
+        messageId = notification['message_id'];
+      } else if (notification['message_id'] is String) {
+        messageId = int.tryParse(notification['message_id']);
+      }
+    }
+    return messageId;
   }
 
   /// Called when an in-app message is showed, it sends the `MBMessageMetricsMetric.view` metric.
