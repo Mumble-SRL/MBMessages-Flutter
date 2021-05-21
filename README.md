@@ -20,7 +20,7 @@ You can install the MBAudience SDK using pub, add this to your pubspec.yaml file
 
 ``` yaml
 dependencies:
-  mbmessages: ^0.0.1
+  mbmessages: ^2.0.0
 ```
 
 And then install packages from the command line with:
@@ -184,7 +184,7 @@ MBMessages.requestToken();
 Once you have a notification token you can register this device to push notifications and register to topics:
 
 ``` dart
-MBPush.onToken = (token) async {
+MBMessages.onToken = (token) async {
   print("Token received $token");
   await MBMessages.registerDevice(token).catchError(
     (error) => print(error),
