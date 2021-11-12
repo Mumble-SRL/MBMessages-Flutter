@@ -110,9 +110,9 @@ class MBMessage {
     int sendAfterDays = dictionary['send_after_days'] is int
         ? dictionary['send_after_days']
         : 0;
-    int repeatTimes = dictionary['repeat'] is int ? dictionary['repeat'] : 0;
+    int repeatTimes = dictionary['repeat'] is int ? dictionary['repeat'] : 1;
 
-    dynamic? triggers = dictionary['triggers'];
+    dynamic triggers = dictionary['triggers'];
 
     return MBMessage(
       id: id,

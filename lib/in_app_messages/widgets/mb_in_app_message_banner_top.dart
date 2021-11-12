@@ -168,7 +168,9 @@ class _MBInAppMessageBannerTopMainContentWidget extends StatelessWidget {
               theme: theme,
               onButtonPressed: (button) => onButtonPressed(button),
             ),
-            !isBlockingMessage ? _MBInAppMessageBannerTopHandleWidget() : Container(),
+            !isBlockingMessage
+                ? _MBInAppMessageBannerTopHandleWidget()
+                : Container(),
           ],
         ),
       ),

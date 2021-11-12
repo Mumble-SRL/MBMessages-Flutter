@@ -64,7 +64,7 @@ class MBPushMessage {
       body = payload['body'] ?? '';
       if (payload['sent'] is int) {
         sent = payload['sent'] == 1;
-      } else if (payload['sent'] is bool){
+      } else if (payload['sent'] is bool) {
         sent = payload['sent'];
       }
       badge = payload['badge'];
