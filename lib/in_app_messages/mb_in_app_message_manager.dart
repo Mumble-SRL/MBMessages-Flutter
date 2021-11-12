@@ -317,7 +317,7 @@ class MBInAppMessageManager {
           Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
-    return messageShowCount <= message.repeatTimes;
+    return messageShowCount < message.repeatTimes;
   }
 
   /// Set the message as showed in shared_preferences
