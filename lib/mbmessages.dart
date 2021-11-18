@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_manager.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
@@ -10,8 +11,6 @@ import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mbmessages/metrics/mbmessage_metrics.dart';
 import 'package:mburger/mb_manager.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:mburger/mb_plugin/mb_plugins_manager.dart';
 import 'package:mpush/mp_android_notifications_settings.dart';
 import 'package:mpush/mp_topic.dart';
@@ -19,11 +18,12 @@ import 'package:mpush/mp_topic.dart';
 import 'in_app_messages/mb_in_app_message.dart';
 import 'push_notifications/mbpush.dart';
 
-export 'mb_messages_builder.dart';
-export 'in_app_messages/widgets/mb_in_app_message_theme.dart';
-export 'in_app_messages/mb_in_app_message_button.dart';
 export 'package:mpush/mp_android_notifications_settings.dart';
 export 'package:mpush/mp_topic.dart';
+
+export 'in_app_messages/mb_in_app_message_button.dart';
+export 'in_app_messages/widgets/mb_in_app_message_theme.dart';
+export 'mb_messages_builder.dart';
 
 /// This is the main entry point to manage all the messages features of MBurger.
 /// To use create an instance of MBMessages and add it to the MBManager plugins.
@@ -288,6 +288,29 @@ class MBMessages extends MBPlugin {
       title: 'Device: $deviceId',
       single: true,
     );
+  }
+
+  /// Configures the MBPush plugin with custom replacements map made of
+  /// Key -> String to replace
+  /// Value -> String to add
+  ///
+  /// @param customReplacements Map.
+  /// Be aware that saved custom replacements maintain between apps openings
+  static addCustomReplacements({
+    required Map<String, String>? customReplacements,
+  }) async {
+    MBPush.addCustomReplacements(customReplacements);
+  }
+
+  /// Clears the custom replacements from MBPush plugin
+  static removeCustomReplacements() async{
+    MBPush.removeCustomReplacements();
+  }
+
+  /// Obtain current saved custom replacements
+  /// If there are no maps saved it will return null
+  static Future<Map<String, String>?> getCustomReplacements() async {
+    return await MBPush.getCustomReplacements();
   }
 
 //endregion
