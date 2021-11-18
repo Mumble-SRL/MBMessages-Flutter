@@ -13,8 +13,10 @@ dependencies:
     sdk: flutter
   device_info: ^2.0.1
   http: ^0.13.3
-  mburger: ^2.0.0
-  mpush: ^1.0.0
+  mburger: #^2.0.7
+    path: C:/Users/enric/ROBA GIT/FLUTTER/mburger
+  mpush: #^1.0.0
+    path: ../MPush-Flutter
   path: ^1.8.0
   path_provider: ^2.0.1
   shared_preferences: ^2.0.5

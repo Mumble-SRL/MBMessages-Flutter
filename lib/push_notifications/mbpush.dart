@@ -25,6 +25,21 @@ class MBPush {
     MPush.onToken = onToken;
   }
 
+  /// Sets custom info for push notifications
+  static addCustomReplacements(Map<String, String>? customData) {
+    MPush.addCustomReplacements(customData: customData);
+  }
+
+  /// Remove custom replacements for push notifications
+  static removeCustomReplacements() {
+    MPush.removeCustomReplacements();
+  }
+
+  /// Remove custom replacements for push notifications
+  static Future<Map<String, String>?> getCustomReplacements() async{
+    return await MPush.getCustomReplacements();
+  }
+
   /// The notification that launched the app, if present, otherwise `null`.
   static Future<Map<String, dynamic>?> launchNotification() =>
       MPush.launchNotification();
