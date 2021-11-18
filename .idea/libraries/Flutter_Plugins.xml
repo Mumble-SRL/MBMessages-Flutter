@@ -2,19 +2,16 @@
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
       <root url="file://$PROJECT_DIR$" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.0" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.1" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-4.2.0" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.0" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.0.0" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.0" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.1" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.1" />
-      <root url="file://$PROJECT_DIR$/../MPush-Flutter" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/device_info_plus_web-1.0.1" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.8" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/device_info_plus-1.0.1" />
-      <root url="file://$USER_HOME$/FLUTTER-SDK/.pub-cache/hosted/pub.dartlang.org/device_info_plus_macos-1.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.5" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mpush-1.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-4.2.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.0" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
