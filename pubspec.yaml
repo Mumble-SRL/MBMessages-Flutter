@@ -1,6 +1,6 @@
 name: mbmessages
 description: MBMessages plugin for MBurger, that lets you manage push notifications and in-app messages.
-version: 2.0.1+2
+version: 2.0.2
 homepage: https://web.mburger.cloud/engagement-platform
 repository: https://github.com/Mumble-SRL/MBMessages-Flutter
 
@@ -13,10 +13,8 @@ dependencies:
     sdk: flutter
   device_info: ^2.0.1
   http: ^0.13.3
-  mburger: #^2.0.7
-    path: C:/Users/enric/ROBA GIT/FLUTTER/mburger
-  mpush: #^1.0.0
-    path: ../MPush-Flutter
+  mburger: ^2.0.7
+  mpush: ^1.0.5
   path: ^1.8.0
   path_provider: ^2.0.1
   shared_preferences: ^2.0.5

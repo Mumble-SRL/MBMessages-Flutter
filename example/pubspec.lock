@@ -194,9 +194,9 @@ packages:
   mburger:
     dependency: transitive
     description:
-      path: "C:/Users/enric/ROBA GIT/FLUTTER/mburger"
-      relative: false
-    source: path
+      name: mburger
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "2.0.7"
   meta:
     dependency: transitive
@@ -215,10 +215,10 @@ packages:
   mpush:
     dependency: transitive
     description:
-      path: "../../MPush-Flutter"
-      relative: true
-    source: path
-    version: "1.0.4+1"
+      name: mpush
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   path:
     dependency: transitive
     description:
