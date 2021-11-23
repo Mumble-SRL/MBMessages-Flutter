@@ -296,22 +296,21 @@ class MBMessages extends MBPlugin {
   ///
   /// @param customReplacements Map.
   /// Be aware that saved custom replacements maintain between apps openings
-  static addCustomReplacements({
+  static Future<void> addCustomReplacements({
     required Map<String, String>? customReplacements,
   }) async {
-    MBPush.addCustomReplacements(customReplacements);
+    await MBPush.addCustomReplacements(customReplacements);
   }
 
   /// Clears the custom replacements from MBPush plugin
-  static removeCustomReplacements() async{
-    MBPush.removeCustomReplacements();
+  static Future<void> removeCustomReplacements() async {
+    await MBPush.removeCustomReplacements();
   }
 
   /// Obtain current saved custom replacements
   /// If there are no maps saved it will return null
-  static Future<Map<String, String>?> getCustomReplacements() async {
-    return await MBPush.getCustomReplacements();
-  }
+  static Future<Map<String, String>?> getCustomReplacements() =>
+      MBPush.getCustomReplacements();
 
 //endregion
 }
