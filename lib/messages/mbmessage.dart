@@ -34,10 +34,10 @@ class MBMessage {
   final DateTime createdAt;
 
   /// The start date of the message.
-  final DateTime startDate;
+  final DateTime? startDate;
 
   /// The end date of the message.
-  final DateTime endDate;
+  final DateTime? endDate;
 
   /// If automation is on for this message.
   final bool automationIsOn;
@@ -49,7 +49,7 @@ class MBMessage {
   int repeatTimes;
 
   /// The triggers for the messages.
-  dynamic? triggers;
+  dynamic triggers;
 
   /// Initializes a message with the parameters passed.
   MBMessage({
@@ -60,8 +60,8 @@ class MBMessage {
     this.inAppMessage,
     this.pushMessage,
     required this.createdAt,
-    required this.startDate,
-    required this.endDate,
+    this.startDate,
+    this.endDate,
     required this.automationIsOn,
     required this.sendAfterDays,
     required this.repeatTimes,
@@ -93,12 +93,17 @@ class MBMessage {
     DateTime creationDate =
         DateTime.fromMillisecondsSinceEpoch(creationDateInt * 1000);
 
-    int startDateInt = dictionary['starts_at'] ?? 0;
-    DateTime startDate =
-        DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000);
+    int? startDateInt = dictionary['starts_at'];
+    DateTime? startDate;
+    if (startDateInt != null) {
+      startDate = DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000);
+    }
 
-    int endDateInt = dictionary['ends_at'] ?? 0;
-    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000);
+    int? endDateInt = dictionary['ends_at'];
+    DateTime? endDate;
+    if (endDateInt != null) {
+      endDate = DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000);
+    }
 
     bool automationIsOn = false;
     if (dictionary['automation'] is int) {
