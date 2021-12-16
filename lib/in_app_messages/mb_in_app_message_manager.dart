@@ -3,12 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
-import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_banner_bottom.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_banner_top.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_center.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_fullscreen_image.dart';
-import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
 import 'package:mbmessages/mbmessages.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mbmessages/metrics/mbmessage_metrics.dart';
@@ -146,7 +144,7 @@ class MBInAppMessageManager {
     await _setMessageShowed(message);
     MBMessageMetrics.inAppMessageShowed(message);
 
-    dynamic? result = await showGeneralDialog(
+    dynamic result = await showGeneralDialog(
       context: context,
       barrierDismissible: !inAppMessage.isBlocking ? true : false,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
@@ -297,8 +295,9 @@ class MBInAppMessageManager {
   /// @param message The in-app message to show.
   /// @returns A future that completes with a bool that tells if the message needs to be showed or not.
   static Future<bool> _needsToShowMessage(MBMessage message) async {
-    if (message.automationIsOn) {
-      if (message.endDate.millisecondsSinceEpoch <
+    if (message.endDate != null) {
+      DateTime endDate = message.endDate!;
+      if (endDate.millisecondsSinceEpoch <
           DateTime.now().millisecondsSinceEpoch) {
         return false;
       }

@@ -12,8 +12,6 @@ import 'package:mbmessages/metrics/mbmessage_metrics.dart';
 import 'package:mburger/mb_manager.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
 import 'package:mburger/mb_plugin/mb_plugins_manager.dart';
-import 'package:mpush/mp_android_notifications_settings.dart';
-import 'package:mpush/mp_topic.dart';
 
 import 'in_app_messages/mb_in_app_message.dart';
 import 'push_notifications/mbpush.dart';
@@ -296,22 +294,19 @@ class MBMessages extends MBPlugin {
   ///
   /// @param customReplacements Map.
   /// Be aware that saved custom replacements maintain between apps openings
-  static addCustomReplacements({
+  static Future<void> addCustomReplacements({
     required Map<String, String>? customReplacements,
-  }) async {
-    MBPush.addCustomReplacements(customReplacements);
-  }
+  }) =>
+      MBPush.addCustomReplacements(customReplacements);
 
   /// Clears the custom replacements from MBPush plugin
-  static removeCustomReplacements() async{
-    MBPush.removeCustomReplacements();
-  }
+  static Future<void> removeCustomReplacements() =>
+      MBPush.removeCustomReplacements();
 
   /// Obtain current saved custom replacements
   /// If there are no maps saved it will return null
-  static Future<Map<String, String>?> getCustomReplacements() async {
-    return await MBPush.getCustomReplacements();
-  }
+  static Future<Map<String, String>?> getCustomReplacements() =>
+      MBPush.getCustomReplacements();
 
 //endregion
 }
