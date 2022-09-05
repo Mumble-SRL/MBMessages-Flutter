@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
-import 'package:mbmessages/in_app_messages/widgets/tappable_widget.dart';
+import 'package:mbmessages/src/widgets/tappable_widget.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
 import 'mb_in_app_message_button_widget.dart';
@@ -30,10 +30,10 @@ class MBInAppMessageCenter extends StatefulWidget {
     required this.message,
     required this.onButtonPressed,
     required this.theme,
-  });
+  }) : super(key: key);
 
   @override
-  _MBInAppMessageCenterState createState() => _MBInAppMessageCenterState();
+  State<MBInAppMessageCenter> createState() => _MBInAppMessageCenterState();
 }
 
 class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
@@ -82,8 +82,8 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
         child: Container(
           decoration: BoxDecoration(
             color: containerColor,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            boxShadow: const [
               BoxShadow(
                 color: Color.fromRGBO(162, 162, 162, 0.37),
                 blurRadius: 10,
@@ -121,7 +121,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
                       theme: widget.theme,
                       onTap: () => _closePressed(),
                     )
-                  : Container(
+                  : const SizedBox(
                       width: 0,
                       height: 0,
                     ),
@@ -139,7 +139,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
     bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     if (!isBlockingMessage) {
       Navigator.of(widget.mainContext).pop(false);
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
     }
     if (widget.onButtonPressed != null) {
       widget.onButtonPressed!(button);
@@ -150,7 +150,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   _closePressed() async {
     timer?.cancel();
     Navigator.of(widget.mainContext).pop(true);
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 }
 
@@ -215,7 +215,7 @@ class _MBInAppMessageCenterContentWidget extends StatelessWidget {
       bodyStyle = bodyStyle?.copyWith(color: inAppMessage.bodyColor);
     }
     return Padding(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 10.0,
         bottom: 10.0,
       ),
@@ -270,7 +270,7 @@ class _MBInAppMessageCenterButtonsWidget extends StatelessWidget {
 
     List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
 
-    bool hasButtons = buttons.length != 0;
+    bool hasButtons = buttons.isNotEmpty;
     if (!hasButtons) {
       return Container();
     }
@@ -278,7 +278,7 @@ class _MBInAppMessageCenterButtonsWidget extends StatelessWidget {
     bool has2Buttons = buttons.length == 2;
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
-      child: Container(
+      child: SizedBox(
         height: has2Buttons ? buttonHeight * 2 + 10 : buttonHeight,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -337,7 +337,7 @@ class _MBInAppMessageCenterCloseWidget extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 color: theme.closeButtonBackgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
               ),
               child: Icon(
                 Icons.close,

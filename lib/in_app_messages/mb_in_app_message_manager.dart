@@ -28,7 +28,7 @@ class MBInAppMessageManager {
   /// @param onButtonPressed Function called when a button is pressed.
   static void presentMessages({
     required List<MBMessage> messages,
-    bool ignoreShowedMessages: false,
+    bool ignoreShowedMessages = false,
     MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage,
     Function(MBInAppMessageButton)? onButtonPressed,
   }) async {
@@ -40,7 +40,7 @@ class MBInAppMessageManager {
       List<MBMessage> messagesWithoutShowedMessages = messages;
       messagesWithoutShowedMessages
           .removeWhere((m) => showingMessagesIds.contains(m.id));
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       presentMessages(
         messages: messagesWithoutShowedMessages,
         ignoreShowedMessages: ignoreShowedMessages,
@@ -64,7 +64,7 @@ class MBInAppMessageManager {
       messagesToShow = messages;
     }
 
-    if (messagesToShow.length == 0) {
+    if (messagesToShow.isEmpty) {
       return;
     }
 
@@ -118,6 +118,9 @@ class MBInAppMessageManager {
       return;
     }
 
+    MaterialLocalizations materialLocalizations =
+        MaterialLocalizations.of(context);
+
     MBInAppMessageTheme theme = themeForMessage != null
         ? themeForMessage(inAppMessage)
         : MBInAppMessageTheme.defaultThemeForMessage(context, inAppMessage);
@@ -147,7 +150,7 @@ class MBInAppMessageManager {
     dynamic result = await showGeneralDialog(
       context: context,
       barrierDismissible: !inAppMessage.isBlocking ? true : false,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: materialLocalizations.modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 300),
       transitionBuilder: (
@@ -251,13 +254,13 @@ class MBInAppMessageManager {
 
     if (inAppMessage?.style == MBInAppMessageStyle.bannerTop) {
       offset = Tween<Offset>(
-        begin: Offset(0.0, -1.0),
-        end: Offset(0.0, 0.0),
+        begin: const Offset(0.0, -1.0),
+        end: const Offset(0.0, 0.0),
       ).animate(animation);
     } else {
       offset = Tween<Offset>(
-        begin: Offset(0.0, 1.0),
-        end: Offset(0.0, 0.0),
+        begin: const Offset(0.0, 1.0),
+        end: const Offset(0.0, 0.0),
       ).animate(animation);
     }
     return SlideTransition(

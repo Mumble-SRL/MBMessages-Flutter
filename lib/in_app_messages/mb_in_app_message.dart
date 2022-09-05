@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 
 /// The presentation style of the message, this enum represents the style in which the message will appear
@@ -214,7 +215,9 @@ class MBInAppMessage {
             'sectionId': sectionId,
             'blockId': blockId,
           };
-        } catch (e) {}
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       }
     }
     return null;

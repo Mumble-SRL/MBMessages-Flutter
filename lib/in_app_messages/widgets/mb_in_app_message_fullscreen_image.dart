@@ -6,7 +6,7 @@ import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_button_widget.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
-import 'package:mbmessages/in_app_messages/widgets/tappable_widget.dart';
+import 'package:mbmessages/src/widgets/tappable_widget.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
 /// This widget is displayed in the middle of the screen, coming from the bottom (as a modal view) when the in app message has the style `MBInAppMessageStyle.fullscreenImage`.
@@ -35,10 +35,10 @@ class MBInAppMessageFullscreenImage extends StatefulWidget {
     required this.imageFile,
     required this.onButtonPressed,
     required this.theme,
-  });
+  }) : super(key: key);
 
   @override
-  _MBInAppMessageFullscreenImageState createState() =>
+  State<MBInAppMessageFullscreenImage> createState() =>
       _MBInAppMessageFullscreenImageState();
 }
 
@@ -88,8 +88,8 @@ class _MBInAppMessageFullscreenImageState
         child: Container(
           decoration: BoxDecoration(
             color: containerColor,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            boxShadow: const [
               BoxShadow(
                 color: Color.fromRGBO(162, 162, 162, 0.37),
                 blurRadius: 10,
@@ -112,7 +112,7 @@ class _MBInAppMessageFullscreenImageState
                       theme: widget.theme,
                       onTap: () => _closePressed(),
                     )
-                  : Container(width: 0, height: 0),
+                  : const SizedBox(width: 0, height: 0),
             ],
           ),
         ),
@@ -127,7 +127,7 @@ class _MBInAppMessageFullscreenImageState
     bool isBlockerMessage = inAppMessage?.isBlocking ?? false;
     if (!isBlockerMessage) {
       Navigator.of(widget.mainContext).pop(false);
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
     }
     if (widget.onButtonPressed != null) {
       widget.onButtonPressed!(button);
@@ -138,7 +138,7 @@ class _MBInAppMessageFullscreenImageState
   _closePressed() async {
     timer?.cancel();
     Navigator.of(widget.mainContext).pop(true);
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 }
 
@@ -190,7 +190,7 @@ class _MBInAppMessageFullscreenImageButtonsWidget extends StatelessWidget {
 
     List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
 
-    bool hasButtons = buttons.length != 0;
+    bool hasButtons = buttons.isNotEmpty;
     if (!hasButtons) {
       return Container();
     }
@@ -205,7 +205,7 @@ class _MBInAppMessageFullscreenImageButtonsWidget extends StatelessWidget {
             left: 20.0,
             right: 20.0,
           ),
-          child: Container(
+          child: SizedBox(
             height: has2Buttons ? buttonHeight * 2 + 10 : buttonHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -266,7 +266,7 @@ class _MBInAppMessageFullscreenImageCloseWidget extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 color: theme.closeButtonBackgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
               ),
               child: Icon(
                 Icons.close,

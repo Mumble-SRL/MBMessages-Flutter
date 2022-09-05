@@ -16,7 +16,7 @@ class TappableWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TappableWidgetState createState() => _TappableWidgetState();
+  State<TappableWidget> createState() => _TappableWidgetState();
 }
 
 class _TappableWidgetState extends State<TappableWidget>

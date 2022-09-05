@@ -1,4 +1,3 @@
-## 2.0.2+4
+## 2.0.3
 
-* Bugfixes.
-* The end date is checked for all the in app messages, even when automation is off.
+* Updated Flutter version to 3.3.0

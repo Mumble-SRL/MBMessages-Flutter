@@ -61,8 +61,8 @@ class MBInAppMessageTheme {
     MBInAppMessage message,
   ) {
     ThemeData theme = Theme.of(context);
-    Color mburgerColor = Color.fromRGBO(19, 140, 252, 1);
-    Color mburgerDarkColor = Color.fromRGBO(4, 20, 68, 1);
+    Color mburgerColor = const Color.fromRGBO(19, 140, 252, 1);
+    Color mburgerDarkColor = const Color.fromRGBO(4, 20, 68, 1);
     return MBInAppMessageTheme(
       backgroundColor: message.backgroundColor ?? Colors.white.withOpacity(0.9),
       titleStyle: theme.textTheme.headline2?.copyWith(

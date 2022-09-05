@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mbmessages/push_notifications/mbpush.dart';
 import 'package:http/http.dart' as http;
@@ -102,7 +103,7 @@ class MBMessageMetrics {
               customNotificationData = jsonObject;
             }
           } catch (e) {
-            print(e);
+            debugPrint(e.toString());
           }
         }
         if (customNotificationData != null) {
@@ -221,7 +222,7 @@ class MBMessageMetrics {
     MBMessageMetricsMetric metric,
     int messageId,
   ) {
-    return _metricStringForMetric(metric) + '_' + messageId.toString();
+    return '${_metricStringForMetric(metric)}_$messageId';
   }
 
   /// The key used to store information in shared preferences.

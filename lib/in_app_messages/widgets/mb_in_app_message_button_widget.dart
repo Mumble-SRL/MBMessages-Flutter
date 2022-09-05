@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 import 'package:mbmessages/in_app_messages/widgets/mb_in_app_message_theme.dart';
-import 'package:mbmessages/in_app_messages/widgets/tappable_widget.dart';
+import 'package:mbmessages/src/widgets/tappable_widget.dart';
 
 /// A button of an in app message widget.
 class MBInAppMessageButtonWidget extends StatelessWidget {
@@ -67,13 +67,13 @@ class MBInAppMessageButtonWidget extends StatelessWidget {
           ),
         ),
         child: TappableWidget(
+          onTap: onTap,
           child: Center(
             child: Text(
               button.title,
               style: textStyle,
             ),
           ),
-          onTap: onTap,
         ),
       ),
     );

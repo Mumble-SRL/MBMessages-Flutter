@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:android_id/android_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
@@ -57,9 +58,9 @@ class MBMessages extends MBPlugin {
   /// @param themeForMessage A theme used to define and override colors and fonts of in-app messages.
   /// @param onButtonPressed Callback called when a button of an in-app message is tapped. Use this to bring you user to the correct screen, based on the button settings.
   MBMessages({
-    this.messagesDelay: 1,
-    this.automaticallyCheckMessagesAtStartup: true,
-    this.debug: false,
+    this.messagesDelay = 1,
+    this.automaticallyCheckMessagesAtStartup = true,
+    this.debug = false,
     this.themeForMessage,
     this.onButtonPressed,
   }) {
@@ -79,6 +80,7 @@ class MBMessages extends MBPlugin {
 
   /// The function run at startup by MBurger, initializes the plugin and do the startup work.
   /// It increments the session number and updates the metadata.
+  @override
   Future<void> startupBlock() async {
     if (automaticallyCheckMessagesAtStartup) {
       await _performCheckMessages(fromStartup: true);
@@ -98,7 +100,7 @@ class MBMessages extends MBPlugin {
     var defaultParameters = await MBManager.shared.defaultParameters();
     var headers = await MBManager.shared.headers(contentTypeJson: false);
 
-    Map<String, dynamic> parameters = Map<String, dynamic>();
+    Map<String, dynamic> parameters = <String, dynamic>{};
     parameters.addAll(defaultParameters);
 
     var uri = Uri.https(
@@ -118,7 +120,7 @@ class MBMessages extends MBPlugin {
     List<dynamic>? messagesDictionaries = responseMap['body'];
     int messagesLength = messagesDictionaries?.length ?? 0;
     if (messagesLength == 0 || messagesDictionaries == null) {
-      return null;
+      return;
     }
 
     List<MBMessage> messages = [];
@@ -140,7 +142,7 @@ class MBMessages extends MBPlugin {
             !message.automationIsOn)
         .toList();
 
-    if (validMessages.length != 0) {
+    if (validMessages.isNotEmpty) {
       await Future.delayed(Duration(seconds: delay.toInt()));
       MBInAppMessageManager.presentMessages(
         messages: validMessages,
@@ -275,11 +277,12 @@ class MBMessages extends MBPlugin {
     String deviceId = '';
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceId = androidInfo.androidId;
+      const androidIdPlugin = AndroidId();
+      String? androidId = await androidIdPlugin.getId();
+      deviceId = androidId ?? '';
     } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      deviceId = iosInfo.identifierForVendor;
+      deviceId = iosInfo.identifierForVendor ?? '';
     }
     return MPTopic(
       code: deviceId,
