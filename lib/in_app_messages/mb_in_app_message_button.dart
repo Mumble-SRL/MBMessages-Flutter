@@ -47,7 +47,7 @@ class MBInAppMessageButton {
     required this.blockId,
     required this.sectionId,
     required String linkTypeString,
-  }) : this.linkType = _linkTypeFromString(linkTypeString);
+  }) : linkType = _linkTypeFromString(linkTypeString);
 
   /// Converts a string to a `MBInAppMessageButtonLinkType`
   /// @param linkTypeString The string to convert.

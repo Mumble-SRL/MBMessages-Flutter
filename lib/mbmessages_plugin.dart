@@ -9,7 +9,7 @@ class MBMessagesPlugin {
   static VoidCallback? onAppEnterForeground;
 
   /// The method channel to interact with native code.
-  static const MethodChannel _channel = const MethodChannel('mbmessages');
+  static const MethodChannel _channel = MethodChannel('mbmessages');
 
   /// If method call has been initialized or not
   static bool _methodCallInitialized = false;
@@ -36,7 +36,7 @@ class MBMessagesPlugin {
         }
         break;
       default:
-        print('${methodCall.method} not implemented');
+        debugPrint('${methodCall.method} not implemented');
         return;
     }
   }
