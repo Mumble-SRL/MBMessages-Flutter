@@ -124,7 +124,7 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0"
+    version: "5.1.2"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
@@ -222,10 +222,10 @@ packages:
   mburger:
     dependency: transitive
     description:
-      name: mburger
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.8"
+      path: "../../mburger"
+      relative: true
+    source: path
+    version: "2.0.9"
   meta:
     dependency: transitive
     description:
