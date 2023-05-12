@@ -229,12 +229,12 @@ class _MBInAppMessageBannerTopContentWidget extends StatelessWidget {
     bool hasTitle = inAppMessage.title != null && inAppMessage.title != '';
     bool hasBody = inAppMessage.body != null && inAppMessage.body != '';
     TextStyle? titleStyle =
-        theme.titleStyle ?? Theme.of(context).textTheme.headline2;
+        theme.titleStyle ?? Theme.of(context).textTheme.displayMedium;
     if (inAppMessage.titleColor != null) {
       titleStyle = titleStyle?.copyWith(color: inAppMessage.titleColor);
     }
     TextStyle? bodyStyle =
-        theme.bodyStyle ?? Theme.of(context).textTheme.bodyText2;
+        theme.bodyStyle ?? Theme.of(context).textTheme.bodyMedium;
     if (inAppMessage.bodyColor != null) {
       bodyStyle = bodyStyle?.copyWith(color: inAppMessage.bodyColor);
     }

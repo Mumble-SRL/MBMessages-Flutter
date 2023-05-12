@@ -147,49 +147,51 @@ class MBInAppMessageManager {
     await _setMessageShowed(message);
     MBMessageMetrics.inAppMessageShowed(message);
 
-    dynamic result = await showGeneralDialog(
-      context: context,
-      barrierDismissible: !inAppMessage.isBlocking ? true : false,
-      barrierLabel: materialLocalizations.modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
-      transitionDuration: const Duration(milliseconds: 300),
-      transitionBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        Widget child,
-      ) =>
-          _transitionForMessage(
-        message,
-        animation,
-        child,
-      ),
-      pageBuilder: (
-        BuildContext buildContext,
-        Animation animation,
-        Animation secondaryAnimation,
-      ) =>
-          widget,
-    );
+    if (context.mounted) {
+      dynamic result = await showGeneralDialog(
+        context: context,
+        barrierDismissible: !inAppMessage.isBlocking ? true : false,
+        barrierLabel: materialLocalizations.modalBarrierDismissLabel,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: const Duration(milliseconds: 300),
+        transitionBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,
+        ) =>
+            _transitionForMessage(
+          message,
+          animation,
+          child,
+        ),
+        pageBuilder: (
+          BuildContext buildContext,
+          Animation animation,
+          Animation secondaryAnimation,
+        ) =>
+            widget,
+      );
 
-    bool booleanResult = result is bool ? result : false;
+      bool booleanResult = result is bool ? result : false;
 
-    /// Result is false if the message has been hidden by a button press
-    /// Otherwise it's true, defaults to true if it's null because dismissing it
-    /// from the barrier returns null
-    if (booleanResult) {
-      if (index + 1 < messages.length) {
-        _presentMessage(
-          index: index + 1,
-          messages: messages,
-          themeForMessage: themeForMessage,
-          onButtonPressed: onButtonPressed,
-        );
+      /// Result is false if the message has been hidden by a button press
+      /// Otherwise it's true, defaults to true if it's null because dismissing it
+      /// from the barrier returns null
+      if (booleanResult) {
+        if (index + 1 < messages.length) {
+          _presentMessage(
+            index: index + 1,
+            messages: messages,
+            themeForMessage: themeForMessage,
+            onButtonPressed: onButtonPressed,
+          );
+        } else {
+          _showingMessages = null;
+        }
       } else {
         _showingMessages = null;
       }
-    } else {
-      _showingMessages = null;
     }
   }
 
@@ -232,13 +234,17 @@ class MBInAppMessageManager {
         );
       case MBInAppMessageStyle.fullscreenImage:
         File? imageFile = await _downloadImage(inAppMessage);
-        return MBInAppMessageFullscreenImage(
-          mainContext: context,
-          message: message,
-          imageFile: imageFile,
-          onButtonPressed: onButtonPressed,
-          theme: theme,
-        );
+        if (context.mounted) {
+          return MBInAppMessageFullscreenImage(
+            mainContext: context,
+            message: message,
+            imageFile: imageFile,
+            onButtonPressed: onButtonPressed,
+            theme: theme,
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
     }
   }
 
