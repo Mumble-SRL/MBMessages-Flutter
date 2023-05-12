@@ -65,11 +65,11 @@ class MBInAppMessageTheme {
     Color mburgerDarkColor = const Color.fromRGBO(4, 20, 68, 1);
     return MBInAppMessageTheme(
       backgroundColor: message.backgroundColor ?? Colors.white.withOpacity(0.9),
-      titleStyle: theme.textTheme.headline2?.copyWith(
+      titleStyle: theme.textTheme.displayMedium?.copyWith(
         color: Colors.black,
         fontSize: 20,
       ),
-      bodyStyle: theme.textTheme.bodyText1?.copyWith(
+      bodyStyle: theme.textTheme.bodyLarge?.copyWith(
         color: Colors.black,
       ),
       closeButtonColor: Colors.black,
@@ -78,13 +78,13 @@ class MBInAppMessageTheme {
           message.style == MBInAppMessageStyle.fullscreenImage
               ? Colors.white
               : mburgerColor,
-      button1TextStyle: theme.textTheme.bodyText1?.copyWith(
+      button1TextStyle: theme.textTheme.bodyLarge?.copyWith(
         color: message.style == MBInAppMessageStyle.fullscreenImage
             ? mburgerDarkColor
             : Colors.white,
       ),
       button2BackgroundColor: Colors.transparent,
-      button2TextStyle: theme.textTheme.bodyText1?.copyWith(
+      button2TextStyle: theme.textTheme.bodyLarge?.copyWith(
         color: message.style == MBInAppMessageStyle.fullscreenImage
             ? Colors.white
             : mburgerColor,
