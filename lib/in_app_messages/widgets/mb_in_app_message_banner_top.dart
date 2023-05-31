@@ -204,7 +204,7 @@ class _MBInAppMessageBannerTopImageWidget extends StatelessWidget {
         );
       }
     }
-    return Container();
+    return const SizedBox.shrink();
   }
 }
 
@@ -222,7 +222,7 @@ class _MBInAppMessageBannerTopContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (this.inAppMessage == null) {
-      return Container();
+      return const SizedBox.shrink();
     }
     MBInAppMessage inAppMessage = this.inAppMessage!;
     bool hasImage = inAppMessage.image != null && inAppMessage.image != '';
@@ -287,18 +287,18 @@ class _MBInAppMessageBannerTopButtonsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (this.inAppMessage == null) {
-      return Container();
+      return const SizedBox.shrink();
     }
     MBInAppMessage inAppMessage = this.inAppMessage!;
     if (inAppMessage.buttons == null) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     List<MBInAppMessageButton> buttons = inAppMessage.buttons!;
 
     bool hasButtons = buttons.isNotEmpty;
     if (!hasButtons) {
-      return Container();
+      return const SizedBox.shrink();
     }
     const double buttonHeight = 30;
     bool has2Buttons = buttons.length == 2;
