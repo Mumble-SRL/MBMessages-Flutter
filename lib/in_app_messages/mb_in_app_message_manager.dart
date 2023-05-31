@@ -208,7 +208,7 @@ class MBInAppMessageManager {
   }) async {
     MBInAppMessage? inAppMessage = message.inAppMessage;
     if (inAppMessage == null) {
-      return Container();
+      return const SizedBox.shrink();
     }
     switch (inAppMessage.style) {
       case MBInAppMessageStyle.bannerTop:
