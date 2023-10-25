@@ -24,6 +24,9 @@ class MBInAppMessageTheme {
   /// The text style for the first button.
   final TextStyle? button1TextStyle;
 
+  /// The border radius for the first button.
+  final double? button1BorderRadius;
+
   /// The background color for the second button.
   final Color? button2BackgroundColor;
 
@@ -33,8 +36,11 @@ class MBInAppMessageTheme {
   /// The text style for the second button.
   final TextStyle? button2TextStyle;
 
+  /// The border radius for the second button.
+  final double? button2BorderRadius;
+
   /// Initializes a new in-app message theme with the parameters passed.
-  MBInAppMessageTheme({
+  const MBInAppMessageTheme({
     this.backgroundColor,
     this.titleStyle,
     this.bodyStyle,
@@ -42,9 +48,11 @@ class MBInAppMessageTheme {
     this.closeButtonBackgroundColor,
     this.button1BackgroundColor,
     this.button1TextStyle,
+    this.button1BorderRadius,
     this.button2BackgroundColor,
     this.button2BorderColor,
     this.button2TextStyle,
+    this.button2BorderRadius,
   });
 
   /// Provides a default theme for the in-app message passed.
@@ -83,6 +91,7 @@ class MBInAppMessageTheme {
             ? mburgerDarkColor
             : Colors.white,
       ),
+      button1BorderRadius: 10,
       button2BackgroundColor: Colors.transparent,
       button2TextStyle: theme.textTheme.bodyLarge?.copyWith(
         color: message.style == MBInAppMessageStyle.fullscreenImage
@@ -92,6 +101,7 @@ class MBInAppMessageTheme {
       button2BorderColor: message.style == MBInAppMessageStyle.fullscreenImage
           ? Colors.white
           : mburgerColor,
+      button2BorderRadius: 10,
     );
   }
 
@@ -104,9 +114,11 @@ class MBInAppMessageTheme {
     Color? closeButtonBackgroundColor,
     Color? button1BackgroundColor,
     TextStyle? button1TextStyle,
+    double? button1BorderRadius,
     Color? button2BackgroundColor,
     Color? button2BorderColor,
     TextStyle? button2TextStyle,
+    double? button2BorderRadius,
   }) {
     return MBInAppMessageTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -118,10 +130,12 @@ class MBInAppMessageTheme {
       button1BackgroundColor:
           button1BackgroundColor ?? this.button1BackgroundColor,
       button1TextStyle: button1TextStyle ?? this.button1TextStyle,
+      button1BorderRadius: button1BorderRadius ?? this.button1BorderRadius,
       button2BackgroundColor:
           button2BackgroundColor ?? this.button2BackgroundColor,
       button2BorderColor: button2BorderColor ?? this.button2BorderColor,
       button2TextStyle: button2TextStyle ?? this.button2TextStyle,
+      button2BorderRadius: button2BorderRadius ?? this.button2BorderRadius,
     );
   }
 }
