@@ -54,13 +54,17 @@ class MBInAppMessageButtonWidget extends StatelessWidget {
         borderColor = theme.button2BorderColor!;
       }
     }
+    double borderRadius =
+        (isButton1 ? theme.button1BorderRadius : theme.button2BorderRadius) ??
+            height / 2;
+
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(height / 2)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
       child: Container(
         height: height,
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(height / 2)),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
           border: Border.all(
             color: borderColor,
             width: 1,

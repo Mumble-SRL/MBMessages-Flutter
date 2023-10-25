@@ -65,7 +65,7 @@ MBMessages messagesPlugin = MBMessages(
   messagesDelay: 1,
   automaticallyCheckMessagesAtStartup: true,
   debug: false,
-  themeForMessage: (message) => MBInAppMessageTheme(),
+  themeForMessage: (context, message) => MBInAppMessageTheme(),
   onButtonPressed: (button) => _buttonPressed(button),
 );
 

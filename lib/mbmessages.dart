@@ -46,7 +46,7 @@ class MBMessages extends MBPlugin {
   bool debug = false;
 
   /// Use this function to provide a theme for in-app messages.
-  MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage;
+  MBInAppMessageTheme Function(BuildContext, MBInAppMessage)? themeForMessage;
 
   /// Use this function to receive a callback when a button is pressed
   Function(MBInAppMessageButton)? onButtonPressed;

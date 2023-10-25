@@ -29,7 +29,7 @@ class MBInAppMessageManager {
   static void presentMessages({
     required List<MBMessage> messages,
     bool ignoreShowedMessages = false,
-    MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage,
+    MBInAppMessageTheme Function(BuildContext, MBInAppMessage)? themeForMessage,
     Function(MBInAppMessageButton)? onButtonPressed,
   }) async {
     if (_showingMessages != null) {
@@ -89,7 +89,8 @@ class MBInAppMessageManager {
   static _presentMessage({
     required int index,
     required List<MBMessage> messages,
-    required MBInAppMessageTheme Function(MBInAppMessage)? themeForMessage,
+    required MBInAppMessageTheme Function(BuildContext, MBInAppMessage)?
+        themeForMessage,
     required Function(MBInAppMessageButton)? onButtonPressed,
   }) async {
     if (index >= messages.length) {
@@ -122,7 +123,7 @@ class MBInAppMessageManager {
         MaterialLocalizations.of(context);
 
     MBInAppMessageTheme theme = themeForMessage != null
-        ? themeForMessage(inAppMessage)
+        ? themeForMessage(context, inAppMessage)
         : MBInAppMessageTheme.defaultThemeForMessage(context, inAppMessage);
     Widget widget = await _widgetForInAppMessage(
       context: context,
