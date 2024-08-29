@@ -1,6 +1,6 @@
 name: mbmessages
 description: MBMessages plugin for MBurger, that lets you manage push notifications and in-app messages.
-version: 2.1.2
+version: 2.1.2+1
 homepage: https://web.mburger.cloud/engagement-platform
 repository: https://github.com/Mumble-SRL/MBMessages-Flutter
 
