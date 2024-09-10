@@ -4,12 +4,14 @@ import 'package:mbmessages/mbmessages.dart';
 import 'package:mburger/mburger.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -19,7 +21,7 @@ class _MyAppState extends State<MyApp> {
     MBManager.shared.plugins = [
       MBMessages(
         onButtonPressed: (button) {
-          print(button);
+          debugPrint(button.toString());
         },
       ),
     ];
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp> {
           ),
           body: Center(
             child: TextButton(
-              child: Text(
+              child: const Text(
                 'Configure push notifications',
               ),
               onPressed: () => _configurePushNotifications(),
@@ -54,30 +56,30 @@ class _MyAppState extends State<MyApp> {
   Future<void> _configurePushNotifications() async {
     MBMessages.pushToken = 'YOUR_PUSH_API_KEY';
     MBMessages.onToken = (token) async {
-      print("Token received $token");
+      debugPrint("Token received $token");
       await MBMessages.registerDevice(token).catchError(
-        (error) => print(error),
+        (error) => debugPrint(error),
       );
       await MBMessages.registerToTopics(
         [
           await MBMessages.projectPushTopic(),
           await MBMessages.devicePushTopic(),
-          MPTopic(code: 'Topic'),
+          const MPTopic(code: 'Topic'),
         ],
       ).catchError(
-        (error) => print(error),
+        (error) => debugPrint(error),
       );
-      print('Registered');
+      debugPrint('Registered');
     };
 
     MBMessages.configurePush(
       onNotificationArrival: (notification) {
-        print("Notification arrived: $notification");
+        debugPrint("Notification arrived: $notification");
       },
       onNotificationTap: (notification) {
-        print("Notification tapped: $notification");
+        debugPrint("Notification tapped: $notification");
       },
-      androidNotificationsSettings: MPAndroidNotificationsSettings(
+      androidNotificationsSettings: const MPAndroidNotificationsSettings(
         channelId: 'mpush_example',
         channelName: 'mpush',
         channelDescription: 'mpush',
@@ -89,6 +91,6 @@ class _MyAppState extends State<MyApp> {
 
     Map<String, dynamic>? launchNotification =
         await MBMessages.launchNotification();
-    print(launchNotification);
+    debugPrint(launchNotification.toString());
   }
 }

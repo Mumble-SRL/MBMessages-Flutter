@@ -265,7 +265,7 @@ class MBMessages extends MBPlugin {
 
   /// A push topic that represents all devices, used to send a push to all apps.
   /// @returns a future that completes with the project push topic.
-  static Future<MPTopic> projectPushTopic() async => MPTopic(
+  static Future<MPTopic> projectPushTopic() async => const MPTopic(
         code: 'project.all',
         title: 'All users',
         single: false,

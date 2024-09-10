@@ -23,12 +23,12 @@ class MBInAppMessageBannerBottom extends StatefulWidget {
 
   /// Initializes a `MBInAppMessageBannerBottom` with the parameters passed
   const MBInAppMessageBannerBottom({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.message,
     required this.onButtonPressed,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   State<MBInAppMessageBannerBottom> createState() =>
@@ -116,12 +116,12 @@ class _MBInAppMessageBannerBottomMainContentWidget extends StatelessWidget {
   final Function(MBInAppMessageButton) onButtonPressed;
 
   const _MBInAppMessageBannerBottomMainContentWidget({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.inAppMessage,
     required this.theme,
     required this.onButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -186,9 +186,9 @@ class _MBInAppMessageBannerBottomImageWidget extends StatelessWidget {
   final MBInAppMessage? inAppMessage;
 
   const _MBInAppMessageBannerBottomImageWidget({
-    Key? key,
+    super.key,
     required this.inAppMessage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -218,10 +218,10 @@ class _MBInAppMessageBannerBottomImageTextContentWidget
   final MBInAppMessageTheme theme;
 
   const _MBInAppMessageBannerBottomImageTextContentWidget({
-    Key? key,
+    super.key,
     required this.inAppMessage,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -281,12 +281,12 @@ class _MBInAppMessageBannerBottomButtonsWidget extends StatelessWidget {
   final Function(MBInAppMessageButton) onButtonPressed;
 
   const _MBInAppMessageBannerBottomButtonsWidget({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.inAppMessage,
     required this.theme,
     required this.onButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

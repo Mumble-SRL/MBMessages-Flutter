@@ -29,13 +29,13 @@ class MBInAppMessageFullscreenImage extends StatefulWidget {
 
   /// Initializes a `MBInAppMessageFullscreenImage` with the parameters passed
   const MBInAppMessageFullscreenImage({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.message,
     required this.imageFile,
     required this.onButtonPressed,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   State<MBInAppMessageFullscreenImage> createState() =>
@@ -147,9 +147,9 @@ class _MBInAppMessageFullscreenImageImageWidget extends StatelessWidget {
   final File? imageFile;
 
   const _MBInAppMessageFullscreenImageImageWidget({
-    Key? key,
+    super.key,
     required this.imageFile,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -171,12 +171,12 @@ class _MBInAppMessageFullscreenImageButtonsWidget extends StatelessWidget {
   final Function(MBInAppMessageButton) onButtonPressed;
 
   const _MBInAppMessageFullscreenImageButtonsWidget({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.inAppMessage,
     required this.theme,
     required this.onButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -248,10 +248,10 @@ class _MBInAppMessageFullscreenImageCloseWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const _MBInAppMessageFullscreenImageCloseWidget({
-    Key? key,
+    super.key,
     required this.theme,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

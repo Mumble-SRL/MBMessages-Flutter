@@ -24,14 +24,14 @@ class MBInAppMessageButtonWidget extends StatelessWidget {
   final MBInAppMessageTheme theme;
 
   const MBInAppMessageButtonWidget({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.button,
     required this.height,
     required this.isButton1,
     required this.onTap,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

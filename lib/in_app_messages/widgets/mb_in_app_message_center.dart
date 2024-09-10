@@ -25,12 +25,12 @@ class MBInAppMessageCenter extends StatefulWidget {
 
   /// Initializes a `MBInAppMessageCenter` with the parameters passed
   const MBInAppMessageCenter({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.message,
     required this.onButtonPressed,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   State<MBInAppMessageCenter> createState() => _MBInAppMessageCenterState();
@@ -159,9 +159,9 @@ class _MBInAppMessageCenterImageWidget extends StatelessWidget {
   final MBInAppMessage? inAppMessage;
 
   const _MBInAppMessageCenterImageWidget({
-    Key? key,
+    super.key,
     required this.inAppMessage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -193,10 +193,10 @@ class _MBInAppMessageCenterContentWidget extends StatelessWidget {
   final MBInAppMessageTheme theme;
 
   const _MBInAppMessageCenterContentWidget({
-    Key? key,
+    super.key,
     required this.inAppMessage,
     required this.theme,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,12 +251,12 @@ class _MBInAppMessageCenterButtonsWidget extends StatelessWidget {
   final Function(MBInAppMessageButton) onButtonPressed;
 
   const _MBInAppMessageCenterButtonsWidget({
-    Key? key,
+    super.key,
     required this.mainContext,
     required this.inAppMessage,
     required this.theme,
     required this.onButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -319,10 +319,10 @@ class _MBInAppMessageCenterCloseWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const _MBInAppMessageCenterCloseWidget({
-    Key? key,
+    super.key,
     required this.theme,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
