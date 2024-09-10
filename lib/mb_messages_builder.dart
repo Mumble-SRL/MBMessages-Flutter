@@ -20,9 +20,9 @@ class MBMessagesBuilder extends StatelessWidget {
   /// Initializes a message builder with a child
   /// @param child The child of the message builder.
   const MBMessagesBuilder({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   /// Returns the child and sets the correct context in MBmessages.
   @override

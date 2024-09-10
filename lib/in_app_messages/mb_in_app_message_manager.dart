@@ -139,9 +139,9 @@ class MBInAppMessageManager {
 
     // For blocking messages add WillPopScope widget to disable Android back button
     if (inAppMessage.isBlocking) {
-      widget = WillPopScope(
+      widget = PopScope(
+        canPop: false,
         child: widget,
-        onWillPop: () async => false,
       );
     }
 

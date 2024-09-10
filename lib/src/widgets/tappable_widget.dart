@@ -10,10 +10,10 @@ class TappableWidget extends StatefulWidget {
   final VoidCallback? onTap;
 
   const TappableWidget({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<TappableWidget> createState() => _TappableWidgetState();
