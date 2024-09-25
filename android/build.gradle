@@ -25,7 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'com.mumble.mburger.mbmessages'
+    namespace 'com.mumble.mbmessages'
 
     compileSdkVersion 29
 
