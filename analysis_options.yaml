@@ -3,4 +3,4 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   errors:
     #TODO: set to unused_element_parameter when https://github.com/dart-lang/sdk/issues/49025 is fixed
-    unused_element: ignore
+    unused_element_parameter: ignore
