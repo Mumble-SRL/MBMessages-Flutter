@@ -86,7 +86,7 @@ class MBInAppMessageManager {
   /// @param messages The list of messages.
   /// @param themeForMessage A function that provides the theme of an in-app message.
   /// @param onButtonPressed Function called when a button is pressed.
-  static _presentMessage({
+  static Future<void> _presentMessage({
     required int index,
     required List<MBMessage> messages,
     required MBInAppMessageTheme Function(BuildContext, MBInAppMessage)?
@@ -153,7 +153,7 @@ class MBInAppMessageManager {
         context: context,
         barrierDismissible: !inAppMessage.isBlocking ? true : false,
         barrierLabel: materialLocalizations.modalBarrierDismissLabel,
-        barrierColor: Colors.black.withOpacity(0.5),
+        barrierColor: Colors.black.withValues(alpha: 0.5),
         transitionDuration: const Duration(milliseconds: 300),
         transitionBuilder: (
           BuildContext context,

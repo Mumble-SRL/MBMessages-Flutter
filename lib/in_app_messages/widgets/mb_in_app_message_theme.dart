@@ -72,7 +72,8 @@ class MBInAppMessageTheme {
     Color mburgerColor = const Color.fromRGBO(19, 140, 252, 1);
     Color mburgerDarkColor = const Color.fromRGBO(4, 20, 68, 1);
     return MBInAppMessageTheme(
-      backgroundColor: message.backgroundColor ?? Colors.white.withOpacity(0.9),
+      backgroundColor:
+          message.backgroundColor ?? Colors.white.withValues(alpha: 0.9),
       titleStyle: theme.textTheme.displayMedium?.copyWith(
         color: Colors.black,
         fontSize: 20,

@@ -134,7 +134,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
 
   /// Function called when a button is pressed.
   /// The widget is dismissed and `onButtonPressed` is called.
-  _buttonPressed(MBInAppMessageButton button) async {
+  Future<void> _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
     bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     if (!isBlockingMessage) {
@@ -147,7 +147,7 @@ class _MBInAppMessageCenterState extends State<MBInAppMessageCenter> {
   }
 
   /// Function called when close is pressed.
-  _closePressed() async {
+  Future<void> _closePressed() async {
     timer?.cancel();
     Navigator.of(widget.mainContext).pop(true);
     await Future.delayed(const Duration(milliseconds: 300));

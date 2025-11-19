@@ -93,7 +93,7 @@ class _MBInAppMessageBannerTopState extends State<MBInAppMessageBannerTop> {
 
   /// Function called when a button is pressed.
   /// The widget is dismissed and `onButtonPressed` is called.
-  _buttonPressed(MBInAppMessageButton button) async {
+  Future<void> _buttonPressed(MBInAppMessageButton button) async {
     timer?.cancel();
     bool isBlockingMessage = inAppMessage?.isBlocking ?? false;
     if (!isBlockingMessage) {
@@ -350,7 +350,7 @@ class _MBInAppMessageBannerTopHandleWidget extends StatelessWidget {
           width: 80,
           height: 5,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             borderRadius: const BorderRadius.all(Radius.circular(2.5)),
           ),
         ),

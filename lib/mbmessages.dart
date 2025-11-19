@@ -155,7 +155,7 @@ class MBMessages extends MBPlugin {
 
   /// Presents in app messages to the user.
   /// @param messages In app messages that will be presented.
-  presentMessages(List<MBMessage> messages) {
+  void presentMessages(List<MBMessage> messages) {
     MBInAppMessageManager.presentMessages(
       messages: messages,
       ignoreShowedMessages: debug,
@@ -195,7 +195,7 @@ class MBMessages extends MBPlugin {
   /// @param onNotificationArrival Called when a push notification arrives.
   /// @param onNotificationTap Called when a push notification is tapped.
   /// @param androidNotificationsSettings Settings for the android notification.
-  static configurePush({
+  static void configurePush({
     required Function(Map<String, dynamic>) onNotificationArrival,
     required Function(Map<String, dynamic>) onNotificationTap,
     required MPAndroidNotificationsSettings androidNotificationsSettings,
